@@ -3,34 +3,26 @@ using System;
 
 public partial class SpawnTimer : Timer
 {
-    public int Seconds;
-    public int Minutes;
-    public void Decrement()
+
+    DateTime NextAction;
+    Play play;
+
+    public override void _Ready()
     {
-        if (Seconds < 1 && Minutes < 1)
-        {
-            throw new Exception("Invalid Time, Unable to decrement.");
-        }
-
-        if (Seconds < 1)
-        {
-            Minutes--;
-            Seconds = 59;
-            return;
-        }
-
-        Seconds--;
+        WaitTime = 0.25;
+        play = (Play)GetTree().GetFirstNodeInGroup("play");
     }
 
-    public string TimeToString()
+    public void OnTimerTimeout()
     {
-        string seconds = Seconds.ToString();
-        string minutes = Minutes.ToString();
-        //prepend a 0 if required
-        if (Seconds < 10) seconds = "0" + seconds;
-        if (Minutes < 10) minutes = "0" + minutes;
-
-        return minutes + ":" + seconds;
+        if ((NextAction - new DateTime()).Milliseconds <= 0)
+        {
+            play.NextSpawn();
+        }
     }
 
+    public void Set(double seconds)
+    {
+        NextAction =  new DateTime().AddSeconds(seconds);
+    }
 }

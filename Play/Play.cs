@@ -24,6 +24,9 @@ public partial class Play : Node2D
         }
     }
 
+    private int _spawnCounter = 0;
+
+    public int Credits = 0;
 
     public override void _Ready()
     {
@@ -55,6 +58,12 @@ public partial class Play : Node2D
         countdownTimer.Set(GameDef.Waves[_currentWave].Interval);
     }
 
+    public void NextSpawn()
+    {
+        //GameDef.Waves[_currentWave].Enemies[_spawnCounter]
+
+    }
+
     public void TempInitGD()
     {
         GameDef gd = new GameDef();
@@ -70,11 +79,11 @@ public partial class Play : Node2D
                 Enemies = new List<WaveEnemies>
                 {
                     new WaveEnemies{
-                        Enemy = new EnemySquare(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                     new WaveEnemies{
-                        Enemy = new EnemyCircle(),
+                        Enemy = new Enemy(),
                         Count = 1
                     }
                 }
@@ -85,15 +94,15 @@ public partial class Play : Node2D
                 Enemies = new List<WaveEnemies>
                 {
                     new WaveEnemies{
-                        Enemy = new EnemySquare(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                     new WaveEnemies{
-                        Enemy = new EnemyCircle(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                     new WaveEnemies{
-                        Enemy = new EnemySquare(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                 }
@@ -104,15 +113,15 @@ public partial class Play : Node2D
                 Enemies = new List<WaveEnemies>
                 {
                     new WaveEnemies{
-                        Enemy = new EnemySquare(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                     new WaveEnemies{
-                        Enemy = new EnemyCircle(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                     new WaveEnemies{
-                        Enemy = new EnemySquare(),
+                        Enemy = new Enemy(),
                         Count = 1
                     },
                 }
@@ -143,25 +152,32 @@ public class WaveEnemies
     public int Count;
 }
 
-public class EnemySquare : Enemy
-{
-    public new int HP = 2;
-    public new int Speed = 1;
-    public new string Name = "Square";
-    public new int Reward = 1;
-}
-public class EnemyCircle : Enemy
-{
-    public new int HP = 1;
-    public new int Speed = 2;
-    public new string Name = "Circle";
-    public new int Reward = 2;
-}
+// public class EnemySquare : Enemy
+// {
+//     public new int HP = 2;
+//     public new int Speed = 1;
+//     public new string Name = "Square";
+//     public new int Reward = 1;
+// }
+// public class EnemyOctogon : Enemy
+// {
+//     public new int HP = 5;
+//     public new int Speed = 5;
+//     public new string Name = "Octogon";
+//     public new int Reward = 10;
+// }
+// public class EnemyCircle : Enemy
+// {
+//     public new int HP = 1;
+//     public new int Speed = 2;
+//     public new string Name = "Circle";
+//     public new int Reward = 2;
+// }
 
-public class Enemy : Entity
-{
-    public int Reward;
-}
+// public class Enemy : Entity
+// {
+//     public int Reward;
+// }
 
 public class Entity
 {

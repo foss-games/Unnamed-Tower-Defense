@@ -1,12 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b852g3l2xbbcx"]
+[gd_scene load_steps=4 format=3 uid="uid://b852g3l2xbbcx"]
 
 [ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="1_1og73"]
-[ext_resource type="Script" uid="uid://cj45nmp6qkt4x" path="res://Play/Play.cs" id="1_u8v3y"]
 [ext_resource type="PackedScene" uid="uid://bewucabwxc87q" path="res://HUD/HUD.tscn" id="3_6m1a4"]
 [ext_resource type="Script" uid="uid://bajokxoua4a1q" path="res://Play/SpawnTimer.cs" id="4_lb7pv"]
 
 [node name="Play" type="Node2D" groups=["play"]]
-script = ExtResource("1_u8v3y")
 
 [node name="Background" parent="." instance=ExtResource("1_1og73")]
 
@@ -17,4 +15,8 @@ script = ExtResource("1_u8v3y")
 [node name="Towers" type="Node" parent="."]
 
 [node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 0.25
+autostart = true
 script = ExtResource("4_lb7pv")
+
+[connection signal="timeout" from="SpawnTimer" to="." method="OnTimerTimeout"]

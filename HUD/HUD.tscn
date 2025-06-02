@@ -1,20 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://bewucabwxc87q"]
+[gd_scene load_steps=2 format=3 uid="uid://bewucabwxc87q"]
 
-[ext_resource type="Script" uid="uid://blv6vbehlefdi" path="res://HUD/CountdownTimer.cs" id="1_f31rt"]
-[ext_resource type="Script" uid="uid://dn22nmflanase" path="res://HUD/CurrentWave.cs" id="2_amwvk"]
+[ext_resource type="Script" uid="uid://dmtua80jryd2k" path="res://HUD/Hud.cs" id="1_f31rt"]
 
 [node name="Hud" type="Node2D"]
+script = ExtResource("1_f31rt")
 
-[node name="Current Wave" type="Label" parent="." groups=["currentwave"]]
+[node name="WaveText" type="Label" parent="." groups=["currentwave"]]
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 585.0
 offset_bottom = 51.0
 theme_override_font_sizes/font_size = 25
 text = "Wave 0/0"
-script = ExtResource("2_amwvk")
 
-[node name="Countdown" type="Label" parent="."]
+[node name="TimerText" type="Label" parent="."]
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 582.0
@@ -23,8 +22,7 @@ theme_override_font_sizes/font_size = 25
 text = "00:00"
 horizontal_alignment = 2
 
-[node name="CountdownTimer" type="Timer" parent="Countdown" groups=["countdowntimer"]]
+[node name="CountdownTimer" type="Timer" parent="TimerText" groups=["countdowntimer"]]
 autostart = true
-script = ExtResource("1_f31rt")
 
-[connection signal="timeout" from="Countdown/CountdownTimer" to="Countdown/CountdownTimer" method="OnTimerTimeout"]
+[connection signal="timeout" from="TimerText/CountdownTimer" to="TimerText/CountdownTimer" method="OnTimerTimeout"]
