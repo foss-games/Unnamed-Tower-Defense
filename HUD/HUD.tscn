@@ -22,7 +22,7 @@ theme_override_font_sizes/font_size = 25
 text = "00:00"
 horizontal_alignment = 2
 
-[node name="CountdownTimer" type="Timer" parent="TimerText" groups=["countdowntimer"]]
+[node name="HudTimer" type="Timer" parent="." groups=["countdowntimer"]]
 autostart = true
 
-[connection signal="timeout" from="TimerText/CountdownTimer" to="TimerText/CountdownTimer" method="OnTimerTimeout"]
+[connection signal="timeout" from="HudTimer" to="HudTimer" method="OnTimerTimeout"]
