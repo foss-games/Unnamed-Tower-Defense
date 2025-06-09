@@ -1,10 +1,10 @@
-using Godot;
 using System;
+using Godot;
 
-public partial class Enemy : Node2D
+public partial class Enemy : CharacterBody2D
 {
-    private int _hp;
-    public int HP
+    private double _hp;
+    public double HP
     {
         get
         {
@@ -13,31 +13,100 @@ public partial class Enemy : Node2D
         set
         {
             _hp = value;
-            if (_hp == 0) Die();
+            //text.Text = value.ToString();
+            if (_hp <= 0) Die();
         }
     }
 
-    public int Reward;
-    public int Speed;
+    public double Reward;
+    public double Speed;
+
+    public new bool Visible = false;
+
+    public NavigationAgent2D NavAgent;
+
+    public Vector2I TargetPosition;
+    private Label text;
+
+    private float _movementDelta;
 
     Play play;
 
     public override void _Ready()
     {
+        NavAgent = GetNode<NavigationAgent2D>("NavigationAgent2D");
+        NavAgent.TargetPosition = TargetPosition;
+        text = GetNode<Label>("Label");
         play = (Play)GetTree().GetFirstNodeInGroup("play");
+
+
+        Speed = 40;
+        HP = 20;
+        Reward = 5;
     }
 
+    // public override void _PhysicsProcess(double delta)
+    // {
+    //     NavAgent.TargetPosition = TargetPosition;
+    //     Vector2 dir = NavAgent.GetNextPathPosition();
+    //     var velocity = GlobalPosition.DirectionTo(dir) * _movementDelta;
+    //     NavAgent.Velocity = velocity;
+    //     Velocity = velocity;
+    //     _movementDelta = (float)Speed * (float)delta;
+
+
+    //     //OnNavCompute(velocity);
+
+    //     MoveAndSlide();
+
+    // }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        NavAgent.TargetPosition = TargetPosition;
+        // Do not query when the map has never synchronized and is empty.
+        if (NavigationServer2D.MapGetIterationId(NavAgent.GetNavigationMap()) == 0)
+        {
+            return;
+        }
+
+        if (NavAgent.IsNavigationFinished())
+        {
+            return;
+        }
+
+        Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
+        Vector2 newVelocity = GlobalPosition.DirectionTo(nextPathPosition) * (float)Speed;
+        if (NavAgent.AvoidanceEnabled)
+        {
+            NavAgent.Velocity = newVelocity;
+        }
+        else
+        {
+            OnNavCompute(newVelocity);
+        }
+    }
+
+    public void OnNavCompute(Vector2 velocity)
+    {
+        Velocity = velocity;
+        //GlobalPosition = GlobalPosition.MoveToward(GlobalPosition + velocity, _movementDelta);
+
+        MoveAndSlide();
+    }
+
+    public void OnDestinationReached()
+    {
+        play.HP--;
+        Visible = false; //play animation pls
+        QueueFree();
+    }
 
     public void Die()
     {
-        //do death effect
-
-        //credit player with reward
-        play.Credits += Reward;
-        
-        GD.Print("I am ded.");
-        Visible = false;
+        Visible = false; //play death animation pls
         //destroy object
         QueueFree();
+        play.Credits += Reward;
     }
 }

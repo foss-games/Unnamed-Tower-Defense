@@ -11,14 +11,14 @@ config_version=5
 [application]
 
 config/name="Unnamed Tower Defense"
-run/main_scene="uid://cssu18csouqbd"
+run/main_scene="uid://b852g3l2xbbcx"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [display]
 
 window/size/viewport_width=590
-window/size/viewport_height=1278
+window/size/viewport_height=1000
 window/handheld/orientation=1
 
 [dotnet]
@@ -31,6 +31,9 @@ background=""
 play=""
 countdowntimer=""
 currentwave=""
+hud=""
+enemies=""
+projectiles=""
 
 [input]
 
@@ -40,7 +43,14 @@ Click={
 ]
 }
 
+[layer_names]
+
+2d_navigation/layer_1="towers"
+2d_navigation/layer_2="enemies"
+2d_navigation/layer_3="projectiles"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

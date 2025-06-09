@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dmtua80jryd2k" path="res://HUD/Hud.cs" id="1_f31rt"]
 
-[node name="Hud" type="Node2D"]
+[node name="Hud" type="Node2D" groups=["hud"]]
 script = ExtResource("1_f31rt")
 
 [node name="WaveText" type="Label" parent="." groups=["currentwave"]]
@@ -10,6 +10,7 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 585.0
 offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.784314, 0.784314, 0.784314, 1)
 theme_override_font_sizes/font_size = 25
 text = "Wave 0/0"
 
@@ -18,11 +19,29 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 582.0
 offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.784314, 0.784314, 0.784314, 1)
 theme_override_font_sizes/font_size = 25
 text = "00:00"
 horizontal_alignment = 2
 
-[node name="HudTimer" type="Timer" parent="." groups=["countdowntimer"]]
-autostart = true
+[node name="HPText" type="Label" parent="."]
+offset_left = 4.0
+offset_top = 60.0
+offset_right = 100.0
+offset_bottom = 95.0
+theme_override_colors/font_color = Color(0.784314, 0.784314, 0.784314, 1)
+theme_override_font_sizes/font_size = 25
+text = "HP 0/0"
 
-[connection signal="timeout" from="HudTimer" to="HudTimer" method="OnTimerTimeout"]
+[node name="CreditText" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 32.0
+offset_right = 124.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0.784314, 0.784314, 0.784314, 1)
+theme_override_font_sizes/font_size = 25
+text = "Credits 10"
+
+[node name="HudTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="HudTimer" to="." method="OnTimerTimeout"]
