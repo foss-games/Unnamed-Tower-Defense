@@ -21,11 +21,20 @@ public partial class Greg : Node2D
         towerCollection = (Node2D)GetTree().GetFirstNodeInGroup("towerscollection");
         tower = GetNode<Tower>("Tower");
         tower.AIEnabled = false;
-        //GetNode<Tower>("Greg").AIEnabled = false;
         button = GetNode<Button>("Button");
         button.ButtonDown += TowerPickedUp;
         button.ButtonUp += TowerDropped;
     }
+
+    public override void _Draw()
+    {
+        base._Draw();
+        if (IsHeld)
+        {
+            DrawCircle(button.GlobalPosition, 10, new Color(0, 1, 0, 0.5f), true, -1, true);
+        }
+    }
+
 
     public void TowerPickedUp()
     {
@@ -34,7 +43,7 @@ public partial class Greg : Node2D
             GD.Print("Grabbed");
             IsHeld = true;
             offset = GetGlobalMousePosition() - GlobalPosition;
-            tower.GetNode<Polygon2D>("Polygon2D").Visible = true;
+            //tower.GetNode<Polygon2D>("Polygon2D").Visible = true;
         }
     }
 
@@ -47,7 +56,7 @@ public partial class Greg : Node2D
         Tower newTower = (Tower)towerScene.Instantiate();
         newTower.CallDeferred("Move", map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
         towerCollection.AddChild(newTower);
-        tower.GetNode<Polygon2D>("Polygon2D").Visible = false;
+        //tower.GetNode<Polygon2D>("Polygon2D").Visible = false;
 
         GlobalPosition = StartingPosition;
     }
@@ -57,8 +66,6 @@ public partial class Greg : Node2D
         if (IsHeld)
         {
             Position = GetGlobalMousePosition() - offset;
-            // GlobalPosition = map.MapToLocal(map.LocalToMap(GetGlobalMousePosition() - offset));
-            // GD.Print(GlobalPosition, offset);
         }
     }
 }

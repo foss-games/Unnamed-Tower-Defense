@@ -13,9 +13,4 @@ autostart = true
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_qqxa3")
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
-visible = false
-color = Color(0.349098, 0.65203, 0, 0.458824)
-polygon = PackedVector2Array(-36, -38, 41, -38, 41, 33, -36, 33)
-
 [connection signal="timeout" from="ShotTimer" to="." method="OnShotTimerTimeout"]

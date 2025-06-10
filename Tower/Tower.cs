@@ -34,7 +34,6 @@ public partial class Tower : Node2D
         ShotTimer.WaitTime = RateOfFire;
 
         map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
-        map.SetCell(map.LocalToMap(Position), 0, new Vector2I(4, 0));
 
     }
 
