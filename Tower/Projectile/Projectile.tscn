@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://uah1owdl013j"]
+
+[ext_resource type="Texture2D" uid="uid://dxgbq7cg51tor" path="res://Assets/bulllet.png" id="1_k77a4"]
+[ext_resource type="Script" uid="uid://cbhar2b85g804" path="res://Tower/Projectile/Projectile.cs" id="1_rji2k"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rji2k"]
+radius = 4.12311
+
+[node name="Projectile" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 2
+motion_mode = 1
+script = ExtResource("1_rji2k")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_k77a4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_rji2k")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]

@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://cssu18csouqbd"]
+
+[ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="1_ku1ks"]
+
+[node name="MainMenu" type="Node2D"]
+
+[node name="Background" parent="." instance=ExtResource("1_ku1ks")]
+position = Vector2(27.877, 35.7391)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 587.0
+offset_bottom = 346.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 60
+text = " Tower
+Defense"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+offset_left = 208.0
+offset_top = 606.0
+offset_right = 411.0
+offset_bottom = 715.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Play"

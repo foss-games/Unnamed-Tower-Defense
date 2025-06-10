@@ -1,0 +1,57 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Unnamed Tower Defense"
+run/main_scene="uid://b852g3l2xbbcx"
+config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=590
+window/size/viewport_height=1000
+window/handheld/orientation=1
+
+[dotnet]
+
+project/assembly_name="Unnamed Tower Defense"
+
+[global_group]
+
+background=""
+play=""
+countdowntimer=""
+currentwave=""
+hud=""
+enemies=""
+projectiles=""
+towerscollection=""
+
+[input]
+
+Click={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(168, 15),"global_position":Vector2(177, 63),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+
+[layer_names]
+
+2d_navigation/layer_1="towers"
+2d_navigation/layer_2="enemies"
+2d_navigation/layer_3="projectiles"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://b852g3l2xbbcx"]
+
+[ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="1_1og73"]
+[ext_resource type="Script" uid="uid://cj45nmp6qkt4x" path="res://Play/Play.cs" id="1_6m1a4"]
+[ext_resource type="PackedScene" uid="uid://bewucabwxc87q" path="res://HUD/HUD.tscn" id="3_6m1a4"]
+[ext_resource type="PackedScene" uid="uid://bumy20hta7362" path="res://PurchaseArea/Purchase Area.tscn" id="5_dl6rg"]
+
+[node name="Play" type="Node2D" groups=["play"]]
+script = ExtResource("1_6m1a4")
+
+[node name="Background" parent="." instance=ExtResource("1_1og73")]
+script = null
+
+[node name="Hud" parent="." instance=ExtResource("3_6m1a4")]
+
+[node name="Towers" type="Node2D" parent="." groups=["towerscollection"]]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Projectiles" type="Node2D" parent="." groups=["projectiles"]]
+
+[node name="PurchaseArea" parent="." instance=ExtResource("5_dl6rg")]
+
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 0.25
+autostart = true
+
+[node name="WaveTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="SpawnTimer" to="." method="OnSpawnTimerTick"]
+[connection signal="timeout" from="WaveTimer" to="." method="NextWave"]
