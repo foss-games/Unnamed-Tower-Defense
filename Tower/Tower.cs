@@ -1,3 +1,11 @@
+/*
+Todo
+    
+
+
+
+*/
+
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,6 +18,7 @@ public partial class Tower : Node2D
     public int Damage;
     public int TargetingRange;
     public int VisionRange;
+    public int Cost;
 
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
     public Timer ShotTimer;
@@ -20,21 +29,32 @@ public partial class Tower : Node2D
 
     public bool AIEnabled = true;
 
+    public bool IsHeld = false;
+
+    public Sprite2D circle;
+
+    private Play play;
+
     public override void _Ready()
     {
-        //this is offensive
-        projectilesNode = (Node2D)GetTree().GetNodesInGroup("projectiles")[0];
-        ShotTimer = GetNode<Timer>("ShotTimer");
-
         RateOfFire = 0.5;
-        Damage = 3;
+        Damage = 2;
         VisionRange = 5;
         TargetingRange = 3;
+        Cost = 5;
+
+
+        play = (Play)GetTree().GetFirstNodeInGroup("play");
+
+        projectilesNode = (Node2D)GetTree().GetFirstNodeInGroup("projectiles");
+        ShotTimer = GetNode<Timer>("ShotTimer");
+        circle = GetNode<Sprite2D>("Circle");
 
         ShotTimer.WaitTime = RateOfFire;
 
-        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
+        circle.Scale *= TargetingRange;
 
+        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
     }
 
     public void Move(Vector2 destination)

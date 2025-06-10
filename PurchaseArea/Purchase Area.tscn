@@ -16,22 +16,22 @@ color = Color(1, 1, 1, 0.505882)
 [node name="Available Towers" type="Node" parent="."]
 
 [node name="Greg" type="Node2D" parent="Available Towers"]
+position = Vector2(42, 951)
 script = ExtResource("1_ss3sm")
 
 [node name="Tower" parent="Available Towers/Greg" instance=ExtResource("1_786f7")]
-position = Vector2(42, 951)
 
 [node name="PriceLabel" type="Label" parent="Available Towers/Greg"]
-offset_left = 37.0
-offset_top = 974.0
-offset_right = 77.0
-offset_bottom = 997.0
+offset_left = -3.0
+offset_top = 19.0
+offset_right = 37.0
+offset_bottom = 42.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "5"
 
 [node name="Button" type="Button" parent="Available Towers/Greg"]
 modulate = Color(1, 1, 1, 0)
-offset_left = 19.0
-offset_top = 927.0
-offset_right = 64.0
-offset_bottom = 997.0
+offset_left = -21.0
+offset_top = -25.0
+offset_right = 24.0
+offset_bottom = 45.0

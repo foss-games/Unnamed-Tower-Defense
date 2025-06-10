@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Godot;
 
 public partial class Greg : Node2D
@@ -7,7 +8,6 @@ public partial class Greg : Node2D
     public bool HasMouse = false;
     public bool IsHeld = false;
     public Button button;
-    public Vector2 offset;
 
     public Vector2 StartingPosition;
     PackedScene towerScene = GD.Load<PackedScene>("res://Tower/Tower.tscn");
@@ -26,46 +26,37 @@ public partial class Greg : Node2D
         button.ButtonUp += TowerDropped;
     }
 
-    public override void _Draw()
-    {
-        base._Draw();
-        if (IsHeld)
-        {
-            DrawCircle(button.GlobalPosition, 10, new Color(0, 1, 0, 0.5f), true, -1, true);
-        }
-    }
-
-
     public void TowerPickedUp()
     {
         if (!IsHeld)
         {
             GD.Print("Grabbed");
             IsHeld = true;
-            offset = GetGlobalMousePosition() - GlobalPosition;
-            //tower.GetNode<Polygon2D>("Polygon2D").Visible = true;
+            tower.GetNode<Sprite2D>("Circle").Visible = true;
         }
     }
 
     public void TowerDropped()
     {
         GD.Print("Dropped");
-        GD.Print(map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
+        //GD.Print(map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
         IsHeld = false;
-
         Tower newTower = (Tower)towerScene.Instantiate();
         newTower.CallDeferred("Move", map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
         towerCollection.AddChild(newTower);
-        //tower.GetNode<Polygon2D>("Polygon2D").Visible = false;
+        tower.GetNode<Sprite2D>("Circle").Visible = false;
 
         GlobalPosition = StartingPosition;
+
+        ((Play)GetTree().GetFirstNodeInGroup("play")).Credits -= newTower.Cost;
     }
 
     public override void _Process(double delta)
     {
         if (IsHeld)
         {
-            Position = GetGlobalMousePosition() - offset;
+            GlobalPosition = GetGlobalMousePosition();
+            QueueRedraw();
         }
     }
 }

@@ -35,7 +35,7 @@ public partial class Play : Node2D
         }
     }
 
-    private Hud hud;
+    public Hud hud;
 
     private int _hp;
     public int HP

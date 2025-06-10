@@ -45,22 +45,6 @@ public partial class Enemy : CharacterBody2D
         Reward = 5;
     }
 
-    // public override void _PhysicsProcess(double delta)
-    // {
-    //     NavAgent.TargetPosition = TargetPosition;
-    //     Vector2 dir = NavAgent.GetNextPathPosition();
-    //     var velocity = GlobalPosition.DirectionTo(dir) * _movementDelta;
-    //     NavAgent.Velocity = velocity;
-    //     Velocity = velocity;
-    //     _movementDelta = (float)Speed * (float)delta;
-
-
-    //     //OnNavCompute(velocity);
-
-    //     MoveAndSlide();
-
-    // }
-
     public override void _PhysicsProcess(double delta)
     {
         NavAgent.TargetPosition = TargetPosition;
