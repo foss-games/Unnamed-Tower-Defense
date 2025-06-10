@@ -6,40 +6,59 @@ public partial class Greg : Node2D
     public int Speed = 50;
     public bool HasMouse = false;
     public bool IsHeld = false;
-    public override void _Process(double delta)
+    public Button button;
+    public Vector2 offset;
+
+    public Vector2 StartingPosition;
+    PackedScene towerScene = GD.Load<PackedScene>("res://Tower/Tower.tscn");
+    private TileMapLayer map;
+    private Node2D towerCollection;
+    private Tower tower;
+    public override void _Ready()
     {
-        if (Input.IsActionPressed("Click"))
+        StartingPosition = GlobalPosition;
+        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
+        towerCollection = (Node2D)GetTree().GetFirstNodeInGroup("towerscollection");
+        tower = GetNode<Tower>("Tower");
+        tower.AIEnabled = false;
+        //GetNode<Tower>("Greg").AIEnabled = false;
+        button = GetNode<Button>("Button");
+        button.ButtonDown += TowerPickedUp;
+        button.ButtonUp += TowerDropped;
+    }
+
+    public void TowerPickedUp()
+    {
+        if (!IsHeld)
         {
-            if (HasMouse && !IsHeld)
-            {
-                GD.Print("Grabbed");
-                IsHeld = true;
-            }
-            if (IsHeld)
-            {
-                Vector2 mousePosition = GetGlobalMousePosition();
-                GD.Print("Setting Position");
-                GD.Print(mousePosition);
-                GD.Print(GlobalPosition);
-                GlobalPosition = GetGlobalMousePosition();
-            }
-        }
-        else if (IsHeld)
-        {
-            GD.Print("Dropped");
-            IsHeld = false;
+            GD.Print("Grabbed");
+            IsHeld = true;
+            offset = GetGlobalMousePosition() - GlobalPosition;
+            tower.GetNode<Polygon2D>("Polygon2D").Visible = true;
         }
     }
 
-    public void OnMouseEnter()
+    public void TowerDropped()
     {
-        GD.Print("Mouse Entered");
-        GD.Print(GetGlobalMousePosition());
-        HasMouse = true;
+        GD.Print("Dropped");
+        GD.Print(map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
+        IsHeld = false;
+
+        Tower newTower = (Tower)towerScene.Instantiate();
+        newTower.CallDeferred("Move", map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
+        towerCollection.AddChild(newTower);
+        tower.GetNode<Polygon2D>("Polygon2D").Visible = false;
+
+        GlobalPosition = StartingPosition;
     }
-    public void OnMouseExit()
+
+    public override void _Process(double delta)
     {
-        GD.Print("Mouse Exited");
-        HasMouse = false;
+        if (IsHeld)
+        {
+            Position = GetGlobalMousePosition() - offset;
+            // GlobalPosition = map.MapToLocal(map.LocalToMap(GetGlobalMousePosition() - offset));
+            // GD.Print(GlobalPosition, offset);
+        }
     }
 }

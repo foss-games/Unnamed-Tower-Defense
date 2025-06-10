@@ -18,6 +18,8 @@ public partial class Tower : Node2D
 
     private TileMapLayer map;
 
+    public bool AIEnabled = true;
+
     public override void _Ready()
     {
         //this is offensive
@@ -33,6 +35,13 @@ public partial class Tower : Node2D
 
         map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
         map.SetCell(map.LocalToMap(Position), 0, new Vector2I(4, 0));
+
+    }
+
+    public void Move(Vector2 destination)
+    {
+        map.SetCell(map.LocalToMap(destination), 0, new Vector2I(4, 0));
+        GlobalPosition = destination;
     }
 
     public void Destroy()
@@ -43,7 +52,7 @@ public partial class Tower : Node2D
 
     public void OnShotTimerTimeout()
     {
-
+        if (!AIEnabled) return;
         var enemies = GetTree().GetNodesInGroup("enemies");
         var targetableEnemies = from Enemy enemy in enemies
                                 let d = enemy.GlobalPosition.DistanceSquaredTo(GlobalPosition)
@@ -65,6 +74,7 @@ public partial class Tower : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (!AIEnabled) return;
         //look at nearest bad guy in range * 2
         //shoot at bad guy in range until out of range
         //      then pick new bad guy
@@ -86,7 +96,4 @@ public partial class Tower : Node2D
             RotationDegrees += 45;
         }
     }
-
-
-
 }

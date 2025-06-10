@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://b852g3l2xbbcx"]
+[gd_scene load_steps=5 format=3 uid="uid://b852g3l2xbbcx"]
 
 [ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="1_1og73"]
 [ext_resource type="Script" uid="uid://cj45nmp6qkt4x" path="res://Play/Play.cs" id="1_6m1a4"]
 [ext_resource type="PackedScene" uid="uid://bewucabwxc87q" path="res://HUD/HUD.tscn" id="3_6m1a4"]
-[ext_resource type="PackedScene" uid="uid://djvukg3u7lkdh" path="res://Tower/Tower.tscn" id="4_lb7pv"]
 [ext_resource type="PackedScene" uid="uid://bumy20hta7362" path="res://PurchaseArea/Purchase Area.tscn" id="5_dl6rg"]
 
 [node name="Play" type="Node2D" groups=["play"]]
@@ -14,16 +13,7 @@ script = null
 
 [node name="Hud" parent="." instance=ExtResource("3_6m1a4")]
 
-[node name="Towers" type="Node2D" parent="."]
-
-[node name="Tower" parent="Towers" instance=ExtResource("4_lb7pv")]
-position = Vector2(64, 784)
-
-[node name="Tower2" parent="Towers" instance=ExtResource("4_lb7pv")]
-position = Vector2(16, 752)
-
-[node name="Tower3" parent="Towers" instance=ExtResource("4_lb7pv")]
-position = Vector2(40, 800)
+[node name="Towers" type="Node2D" parent="." groups=["towerscollection"]]
 
 [node name="Enemies" type="Node2D" parent="."]
 
