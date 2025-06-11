@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using FOSSGames;
 using Godot;
 using Godot.Collections;
 
@@ -62,8 +65,10 @@ public partial class Play : Node2D
 
     private Timer waveTimer;
     private Timer spawnTimer;
+
     private Node2D towersNode;
     private Node2D enemiesNode;
+
     private PackedScene enemyScene = GD.Load<PackedScene>("res://Enemy/Enemy.tscn");
 
     private TileMapLayer map;
@@ -75,7 +80,6 @@ public partial class Play : Node2D
         GD.Print("Play._Ready()");
         TempInitGD();
 
-
         hud = GetNode<Hud>("Hud");
         waveTimer = GetNode<Timer>("WaveTimer");
         spawnTimer = GetNode<Timer>("SpawnTimer");
@@ -86,6 +90,11 @@ public partial class Play : Node2D
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
         map.SetCell(map.LocalToMap(GameDef.StartLocation), 0, new Vector2I(1, 0));
         map.SetCell(map.LocalToMap(GameDef.EndLocation), 0, new Vector2I(2, 0));
+        TileMapLayer towerMask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
+        towerMask.SetCell(towerMask.LocalToMap(GameDef.StartLocation), 0, new Vector2I(1, 0));
+        towerMask.SetCell(towerMask.LocalToMap(GameDef.EndLocation), 0, new Vector2I(2, 0));
+
+
 
         waveTimer.WaitTime = GameDef.Waves[0].Interval;
         waveTimer.Start();
@@ -98,6 +107,10 @@ public partial class Play : Node2D
 
         Credits = GameDef.StartingCredits;
 
+        //load json
+        FOSSGames.Tower towerDef = JsonSerializer.Deserialize<FOSSGames.Tower>(File.ReadAllText(@"C:\temp\basictower.json"));
+        //construct tower
+        GD.Print(towerDef);
     }
 
     public void NextWave()

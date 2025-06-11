@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Godot;
 
 public partial class Enemy : CharacterBody2D
@@ -89,8 +90,19 @@ public partial class Enemy : CharacterBody2D
     public void Die()
     {
         Visible = false; //play death animation pls
-        //destroy object
-        QueueFree();
         play.Credits += Reward;
+
+        GpuParticles2D particles = GD.Load<PackedScene>("res://Enemy/deathparticles.tscn").Instantiate<GpuParticles2D>();
+        particles.GlobalPosition = GlobalPosition;
+        GetParent().AddChild(particles);
+
+        //destroy object 
+        QueueFree();
     }
+
+    public void CreateParticles()
+    {
+
+    }
+
 }

@@ -27,5 +27,10 @@ autostart = true
 
 [node name="WaveTimer" type="Timer" parent="."]
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(96, 816)
+enabled = false
+zoom = Vector2(3, 3)
+
 [connection signal="timeout" from="SpawnTimer" to="." method="OnSpawnTimerTick"]
 [connection signal="timeout" from="WaveTimer" to="." method="NextWave"]

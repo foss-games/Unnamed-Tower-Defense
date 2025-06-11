@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://dceah42k2makn"]
+
+[ext_resource type="Texture2D" uid="uid://dsgmlogkj1l33" path="res://Assets/Spark.png" id="1_h2cfp"]
+[ext_resource type="Script" uid="uid://cdyrsilaw2xq5" path="res://Enemy/Particles.cs" id="2_kkjc2"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_vonkd"]
+particles_animation = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vso2s"]
+lifetime_randomness = 1.0
+particle_flag_rotate_y = true
+particle_flag_disable_z = true
+angle_min = -720.0
+angle_max = 720.0
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_max = 1000.0
+gravity = Vector3(0, 98, 0)
+color = Color(0, 0, 1, 1)
+hue_variation_min = -1.0
+hue_variation_max = 0.12
+anim_speed_max = 16.0
+
+[node name="Particles" type="GPUParticles2D"]
+material = SubResource("CanvasItemMaterial_vonkd")
+emitting = false
+amount = 128
+texture = ExtResource("1_h2cfp")
+lifetime = 1.25
+one_shot = true
+speed_scale = 10.48
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_vso2s")
+script = ExtResource("2_kkjc2")

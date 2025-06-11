@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvll65vxt8n7f"]
+[gd_scene load_steps=5 format=3 uid="uid://bvll65vxt8n7f"]
 
 [ext_resource type="Texture2D" uid="uid://8plnxxos8ove" path="res://Assets/Octagon.png" id="1_3o4wt"]
 [ext_resource type="Script" uid="uid://d2sgghf075mk8" path="res://Enemy/Enemy.cs" id="1_epr5s"]
+[ext_resource type="PackedScene" uid="uid://dceah42k2makn" path="res://Enemy/deathparticles.tscn" id="3_vonkd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vi685"]
 radius = 7.0
@@ -31,6 +32,8 @@ autostart = true
 [node name="Label" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="Particles" parent="." instance=ExtResource("3_vonkd")]
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="OnDestinationReached"]
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="OnNavCompute"]

@@ -35,6 +35,7 @@ hud=""
 enemies=""
 projectiles=""
 towerscollection=""
+towermask=""
 
 [input]
 

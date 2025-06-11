@@ -26,6 +26,7 @@ public partial class Tower : Node2D
     private Node2D projectilesNode;
 
     private TileMapLayer map;
+    private TileMapLayer towermask;
 
     public bool AIEnabled = true;
 
@@ -55,11 +56,18 @@ public partial class Tower : Node2D
         circle.Scale *= TargetingRange;
 
         map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
+        towermask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
     }
 
     public void Move(Vector2 destination)
     {
+        if (towermask.GetCellTileData(towermask.LocalToMap(destination)) != null)
+        {
+            return;
+        }
         map.SetCell(map.LocalToMap(destination), 0, new Vector2I(4, 0));
+        towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(4, 0));
+
         GlobalPosition = destination;
     }
 
