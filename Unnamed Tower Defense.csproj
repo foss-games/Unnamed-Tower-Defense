@@ -4,4 +4,6 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>UnnamedTowerDefense</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
 </Project>
