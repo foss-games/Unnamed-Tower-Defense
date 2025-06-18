@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Data;
+using System.Linq;
 using Godot;
 
 public partial class Enemy : CharacterBody2D
@@ -24,8 +26,6 @@ public partial class Enemy : CharacterBody2D
 
     public new bool Visible = false;
 
-    public NavigationAgent2D NavAgent;
-
     public Vector2I TargetPosition;
     private Label text;
 
@@ -33,49 +33,44 @@ public partial class Enemy : CharacterBody2D
 
     Play play;
 
+    private AStarHexGrid2D AStarHex;
+
+    private Line2D pathLine;
+
     public override void _Ready()
     {
-        NavAgent = GetNode<NavigationAgent2D>("NavigationAgent2D");
-        NavAgent.TargetPosition = TargetPosition;
         text = GetNode<Label>("Label");
         play = (Play)GetTree().GetFirstNodeInGroup("play");
+        AStarHex = play.AStarHex;
 
+        pathLine = GetNode<Line2D>("path");
 
-        Speed = 40;
+        Speed = 20;
         HP = 20;
         Reward = 5;
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        NavAgent.TargetPosition = TargetPosition;
-        // Do not query when the map has never synchronized and is empty.
-        if (NavigationServer2D.MapGetIterationId(NavAgent.GetNavigationMap()) == 0)
+        var from = play.map.LocalToMap(GlobalPosition);
+        var to = play.map.LocalToMap(play.GameDef.EndLocation);
+        Vector2[] path = AStarHex.GetPath(from, to);
+
+        if (path.Length < 1)
         {
             return;
         }
 
-        if (NavAgent.IsNavigationFinished())
+        //show path, useful for debug
+        pathLine.ClearPoints();
+        foreach (Vector2 point in path)
         {
-            return;
+            pathLine.AddPoint(pathLine.ToLocal(point));
         }
+        pathLine.QueueRedraw();
 
-        Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
-        Vector2 newVelocity = GlobalPosition.DirectionTo(nextPathPosition) * (float)Speed;
-        if (NavAgent.AvoidanceEnabled)
-        {
-            NavAgent.Velocity = newVelocity;
-        }
-        else
-        {
-            OnNavCompute(newVelocity);
-        }
-    }
-
-    public void OnNavCompute(Vector2 velocity)
-    {
-        Velocity = velocity;
-        //GlobalPosition = GlobalPosition.MoveToward(GlobalPosition + velocity, _movementDelta);
+        Vector2 nextPosition = play.map.ToGlobal(path[1]);
+        Velocity = Position.DirectionTo(nextPosition) * (float)Speed;
 
         MoveAndSlide();
     }

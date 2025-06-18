@@ -16,10 +16,12 @@ public partial class Greg : Node2D
     private Tower tower;
     private Play play;
 
+    private Label debugLabel;
+
     public override void _Ready()
     {
         StartingPosition = GlobalPosition;
-        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
+        map = GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer");
         towerCollection = (Node2D)GetTree().GetFirstNodeInGroup("towerscollection");
         tower = GetNode<Tower>("Tower");
         tower.AIEnabled = false;
@@ -27,20 +29,17 @@ public partial class Greg : Node2D
         button.ButtonDown += TowerPickedUp;
         button.ButtonUp += TowerDropped;
         play = (Play)GetTree().GetFirstNodeInGroup("play");
+        debugLabel = GetNode<Label>("debug");
     }
 
     public void TowerPickedUp()
     {
-        GD.Print(play.Credits);
-        GD.Print(tower.Cost);
         if (play.Credits < tower.Cost)
         {
-            GD.Print("No");
             return;
         }
         if (!IsHeld)
         {
-            GD.Print("Grabbed");
             IsHeld = true;
             tower.GetNode<Sprite2D>("Circle").Visible = true;
         }
@@ -49,7 +48,6 @@ public partial class Greg : Node2D
     public void TowerDropped()
     {
         if (!IsHeld) return;
-        GD.Print("Dropped");
         //GD.Print(map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
         IsHeld = false;
         Tower newTower = (Tower)towerScene.Instantiate();
@@ -58,16 +56,17 @@ public partial class Greg : Node2D
         tower.GetNode<Sprite2D>("Circle").Visible = false;
 
         GlobalPosition = StartingPosition;
-        //GD.Print(newTower.Cost);
-        ((Play)GetTree().GetFirstNodeInGroup("play")).Credits -= newTower.Cost;
     }
 
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
         if (IsHeld)
         {
             GlobalPosition = GetGlobalMousePosition();
             QueueRedraw();
         }
+        Vector2 mouse = GetGlobalMousePosition();
+        debugLabel.GlobalPosition = new Vector2(mouse.X - 50, mouse.Y - 10);
+        debugLabel.Text = map.LocalToMap(mouse).ToString() + "\n" + mouse.ToString();
     }
 }

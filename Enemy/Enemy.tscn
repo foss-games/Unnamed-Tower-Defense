@@ -20,12 +20,6 @@ texture = ExtResource("1_3o4wt")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_vi685")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-target_desired_distance = 1.0
-avoidance_enabled = true
-avoidance_layers = 2
-debug_enabled = true
-
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
@@ -35,5 +29,5 @@ offset_bottom = 23.0
 
 [node name="Particles" parent="." instance=ExtResource("3_vonkd")]
 
-[connection signal="navigation_finished" from="NavigationAgent2D" to="." method="OnDestinationReached"]
-[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="OnNavCompute"]
+[node name="path" type="Line2D" parent="."]
+width = 3.0

@@ -35,3 +35,7 @@ offset_left = -21.0
 offset_top = -25.0
 offset_right = 24.0
 offset_bottom = 45.0
+
+[node name="debug" type="Label" parent="Available Towers/Greg"]
+offset_right = 40.0
+offset_bottom = 23.0

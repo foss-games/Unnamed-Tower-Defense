@@ -29,11 +29,12 @@ public partial class AStarHexGrid2D : AStar2D
         }
     }
 
-    public void AddHexPoint(Vector2I point)
+    public int AddHexPoint(Vector2I point)
     {
         int currentID = pointsArray.Count;
         AddPoint(currentID, map.MapToLocal(point));
         pointsArray.Add(point);
+        return currentID;
     }
 
     public void ConnectHexPont(Vector2I point)

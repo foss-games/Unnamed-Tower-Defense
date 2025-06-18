@@ -1,14 +1,8 @@
-/*
-Todo
-    
-
-
-
-*/
-
 using System;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
 
@@ -21,13 +15,13 @@ public partial class Tower : Node2D
     public int Cost;
 
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
-    public Timer ShotTimer;
+    public Godot.Timer ShotTimer;
 
     private Node2D projectilesNode;
 
     private TileMapLayer map;
     private TileMapLayer towermask;
-
+    private AStarHexGrid2D AStarHex;
     public bool AIEnabled = true;
 
     public bool IsHeld = false;
@@ -35,6 +29,8 @@ public partial class Tower : Node2D
     public Sprite2D circle;
 
     private Play play;
+
+    private NavigationAgent2D NavAgent;
 
     public override void _Ready()
     {
@@ -47,28 +43,55 @@ public partial class Tower : Node2D
 
         play = (Play)GetTree().GetFirstNodeInGroup("play");
 
+        AStarHex = play.AStarHex;
+
         projectilesNode = (Node2D)GetTree().GetFirstNodeInGroup("projectiles");
-        ShotTimer = GetNode<Timer>("ShotTimer");
+        ShotTimer = GetNode<Godot.Timer>("ShotTimer");
         circle = GetNode<Sprite2D>("Circle");
 
         ShotTimer.WaitTime = RateOfFire;
 
         circle.Scale *= TargetingRange;
 
-        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background");
+        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer");
         towermask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
     }
 
-    public void Move(Vector2 destination)
+    public bool PlacementWillBlockPath(Vector2I destination)
+    {
+        //disconnct from all neighbors to prevent pathing
+        int cellID = play.AStarHex.CoordsToID(play.map.LocalToMap(destination));
+        foreach (long connId in play.AStarHex.GetPointConnections(cellID))
+        {
+            play.AStarHex.DisconnectPoints(cellID, connId, true);
+        }
+        play.AStarHex.RemovePoint(cellID);
+
+        Vector2[] path = play.AStarHex.GetPath(play.map.LocalToMap(play.GameDef.StartLocation), play.map.LocalToMap(play.GameDef.EndLocation));
+
+        //re-add the point and reconnect the cell to it's neighbors
+        play.AStarHex.AddHexPoint(play.map.LocalToMap(destination));
+        play.AStarHex.ConnectHexPont(play.map.LocalToMap(destination));
+
+        return path.Length < 1;
+    }
+
+    public void Move(Vector2I destination)
     {
         if (towermask.GetCellTileData(towermask.LocalToMap(destination)) != null)
         {
             return;
         }
+        if (PlacementWillBlockPath(destination)) return;
+
         map.SetCell(map.LocalToMap(destination), 0, new Vector2I(4, 0));
         towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(4, 0));
+        play.AStarHex.AddHexPoint(map.LocalToMap(destination));
+        play.AStarHex.ConnectHexPont(map.LocalToMap(destination));
 
         GlobalPosition = destination;
+
+        ((Play)GetTree().GetFirstNodeInGroup("play")).Credits -= Cost;
     }
 
     public void Destroy()

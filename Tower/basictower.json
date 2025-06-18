@@ -1,0 +1,45 @@
+{
+    "Sprite": {
+        "SpriteSheet": "res:/Assets/BasicTurret.png",
+        "Scale": 1
+    },
+    "HP": 1,
+    "VisionRange": 5,
+    "Cost": 1.0,
+    "Markers": [
+        {"X": 1, "Y": 2}
+    ],
+    "Attacks": [
+        {
+            "Damage": 2,
+            "Range": 3,
+            "Cooldown": 500,
+            "Type": "Projectile",
+            "Projectile": {
+                "Sprite":{
+                    "SpriteSheet": "res:/Assets/bullet.png",
+                    "Scale": 1.0,
+                    "Animation": false
+                }
+            }
+        }
+    ],
+    "Upgrades": [
+        {
+            "Cost": 5.0,
+            "Effects": {
+                "DamageMultiplier": 2
+            }
+        },
+        {
+            "Cost": 10.0,
+            "Effects": {
+                "DamageMultiplier": 2
+            },
+            "Markers": [
+                {"X": 1, "Y": 2},
+                {"X": 1, "Y": 2}
+            ]
+        }
+    ]
+}

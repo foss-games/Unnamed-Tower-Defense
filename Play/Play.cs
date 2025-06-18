@@ -71,9 +71,10 @@ public partial class Play : Node2D
 
     private PackedScene enemyScene = GD.Load<PackedScene>("res://Enemy/Enemy.tscn");
 
-    private TileMapLayer map;
+    public TileMapLayer map;
 
     public PoppableList<Wave> SpawningWaves = new PoppableList<Wave>();
+    public AStarHexGrid2D AStarHex = new AStarHexGrid2D();
 
     public override void _Ready()
     {
@@ -90,11 +91,12 @@ public partial class Play : Node2D
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
         map.SetCell(map.LocalToMap(GameDef.StartLocation), 0, new Vector2I(1, 0));
         map.SetCell(map.LocalToMap(GameDef.EndLocation), 0, new Vector2I(2, 0));
+
+        AStarHex.SetupHexGrid(map);
+
         TileMapLayer towerMask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
         towerMask.SetCell(towerMask.LocalToMap(GameDef.StartLocation), 0, new Vector2I(1, 0));
         towerMask.SetCell(towerMask.LocalToMap(GameDef.EndLocation), 0, new Vector2I(2, 0));
-
-
 
         waveTimer.WaitTime = GameDef.Waves[0].Interval;
         waveTimer.Start();
@@ -112,6 +114,7 @@ public partial class Play : Node2D
         //construct tower
         GD.Print(towerDef);
     }
+
 
     public void NextWave()
     {
