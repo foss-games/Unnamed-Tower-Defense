@@ -26,7 +26,7 @@ public partial class Enemy : CharacterBody2D
 
     public new bool Visible = false;
 
-    public Vector2I TargetPosition;
+    public Vector2 TargetPosition;
     private Label text;
 
     private float _movementDelta;

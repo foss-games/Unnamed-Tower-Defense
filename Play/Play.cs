@@ -257,7 +257,7 @@ public partial class Play : Node2D
     {
 
         Enemy enemy = enemyScene.Instantiate<Enemy>();
-        enemy.GlobalPosition = new Vector2I(GameDef.StartLocation.X - 4, GameDef.StartLocation.Y - 12);
+        enemy.GlobalPosition = new Vector2(GameDef.StartLocation.X - 4, GameDef.StartLocation.Y - 12);
         enemy.Visible = true;
         enemy.TargetPosition = GameDef.EndLocation;
 
