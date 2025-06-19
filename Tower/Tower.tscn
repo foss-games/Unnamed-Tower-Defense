@@ -20,6 +20,7 @@ hframes = 7
 [node name="Turret" type="Sprite2D" parent="."]
 texture = ExtResource("2_pxrlm")
 hframes = 7
+frame = 1
 
 [node name="Circle" type="Sprite2D" parent="."]
 visible = false

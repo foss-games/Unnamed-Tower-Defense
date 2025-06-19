@@ -60,12 +60,7 @@ public partial class Tower : Node2D
     public bool PlacementWillBlockPath(Vector2I destination)
     {
         //disconnct from all neighbors to prevent pathing
-        int cellID = play.AStarHex.CoordsToID(play.map.LocalToMap(destination));
-        foreach (long connId in play.AStarHex.GetPointConnections(cellID))
-        {
-            play.AStarHex.DisconnectPoints(cellID, connId, true);
-        }
-        play.AStarHex.RemovePoint(cellID);
+        RemovePointFromNavigation(destination);
 
         Vector2[] path = play.AStarHex.GetPath(play.map.LocalToMap(play.GameDef.StartLocation), play.map.LocalToMap(play.GameDef.EndLocation));
 
@@ -75,6 +70,17 @@ public partial class Tower : Node2D
 
         return path.Length < 1;
     }
+
+    private void RemovePointFromNavigation(Vector2I destination)
+    {
+        int cellID = play.AStarHex.CoordsToID(play.map.LocalToMap(destination));
+        foreach (long connId in play.AStarHex.GetPointConnections(cellID))
+        {
+            play.AStarHex.DisconnectPoints(cellID, connId, true);
+        }
+        play.AStarHex.RemovePoint(cellID);
+    }
+
 
     public void Move(Vector2I destination)
     {
@@ -86,8 +92,7 @@ public partial class Tower : Node2D
 
         map.SetCell(map.LocalToMap(destination), 0, new Vector2I(4, 0));
         towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(4, 0));
-        play.AStarHex.AddHexPoint(map.LocalToMap(destination));
-        play.AStarHex.ConnectHexPont(map.LocalToMap(destination));
+        RemovePointFromNavigation(destination);
 
         GlobalPosition = destination;
 
