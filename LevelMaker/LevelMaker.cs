@@ -30,7 +30,7 @@ public partial class LevelMaker : Node2D
                 {
                     type = (int)data.GetCustomData("cellType");
                     type++;
-                    if (type > 4) type = 0;
+                    if (type > 3) type = 0;
                 }
 
                 map.SetCell(cell, 0, new Vector2I(type, 0));
