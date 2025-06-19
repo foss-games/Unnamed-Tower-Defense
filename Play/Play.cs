@@ -7,7 +7,7 @@ using Godot.Collections;
 
 public partial class Play : Node2D
 {
-    public GameDef GameDef;
+    public Level GameDef;
     private int _currentWave = -1;
     public int CurrentWave
     {
@@ -109,12 +109,16 @@ public partial class Play : Node2D
 
         Credits = GameDef.StartingCredits;
 
+
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.Converters.Add(new Vector2Converter());
+        options.Converters.Add(new Vector2IConverter());
+        JsonSerializer.Serialize(GameDef, options);
         //load json
-        FOSSGames.Tower towerDef = JsonSerializer.Deserialize<FOSSGames.Tower>(File.ReadAllText(@"C:\temp\basictower.json"));
+        FOSSGames.Tower towerDef = JsonSerializer.Deserialize<FOSSGames.Tower>(File.ReadAllText(@"C:\temp\basictower.json"), options);
         //construct tower
         GD.Print(towerDef);
     }
-
 
     public void NextWave()
     {
@@ -139,9 +143,22 @@ public partial class Play : Node2D
         waveTimer.Start();
     }
 
+    public Level LoadLevel()
+    {
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.Converters.Add(new Vector2Converter());
+
+        //read json
+        string json = "";
+
+        JsonSerializer.Deserialize<Level>(json);
+
+        return new Level();
+    }
+
     public void TempInitGD()
     {
-        GameDef gd = new GameDef();
+        Level gd = new Level();
 
         gd.StartLocation = new Vector2I(68, 757);
         gd.EndLocation = new Vector2I(454, 236);
@@ -246,82 +263,4 @@ public partial class Play : Node2D
 
         enemiesNode.AddChild(enemy);
     }
-}
-
-public class PoppableList<T> : List<T>
-{
-    public T PopFirst()
-    {
-        T item = this[0];
-        this.Remove(item);
-        return item;
-    }
-    public T Pop()
-    {
-        T item = this[this.Count - 1];
-        this.Remove(item);
-        return item;
-    }
-
-    public T PopLast() => Pop();
-}
-
-public class GameDef
-{
-    public Vector2I StartLocation;
-    public Vector2I EndLocation;
-    public double StartingCredits;
-    public int MaxHP;
-    public PoppableList<Wave> Waves;
-}
-
-public class Wave
-{
-    public int Interval;
-    public float TimeSinceLastSpawn = 0;
-    public int SpawnedCount = 0;
-    public List<WaveEnemies> Enemies;
-
-}
-
-public class WaveEnemies
-{
-    public Enemy Enemy;
-    public int Count;
-    public float Interval = 1.0f;
-}
-
-// public class EnemySquare : Enemy
-// {
-//     public new int HP = 2;
-//     public new int Speed = 1;
-//     public new string Name = "Square";
-//     public new int Reward = 1;
-// }
-// public class EnemyOctogon : Enemy
-// {
-//     public new int HP = 5;
-//     public new int Speed = 5;
-//     public new string Name = "Octogon";
-//     public new int Reward = 10;
-// }
-// public class EnemyCircle : Enemy
-// {
-//     public new int HP = 1;
-//     public new int Speed = 2;
-//     public new string Name = "Circle";
-//     public new int Reward = 2;
-// }
-
-// public class Enemy : Entity
-// {
-//     public int Reward;
-// }
-
-public class Entity
-{
-    public int HP;
-    public int Speed;
-    public string Name;
-    //texture
 }
