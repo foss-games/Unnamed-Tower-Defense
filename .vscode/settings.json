@@ -1,14 +1,4 @@
 {
-  "[csharp]": {
-    "editor.codeActionsOnSave": {
-      "source.addMissingImports": "explicit",
-      "source.fixAll": "explicit",
-      "source.organizeImports": "explicit"
-    },
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
-    "editor.formatOnType": false
-  },
   "csharp.debug.justMyCode": false,
   "csharp.debug.suppressJITOptimizations": true,
   "csharp.semanticHighlighting.enabled": true,
@@ -29,11 +19,6 @@
   // https://github.com/OmniSharp/omnisharp-vscode/issues/3816
   "editor.tokenColorCustomizations": {
     "[*]": {
-      // Themes that don't include the word "Dark" or "Light" in them.
-      // These are some bold colors that show up well against most dark and
-      // light themes.
-      //
-      // Change them to something that goes well with your preferred theme :)
       "textMateRules": [
         {
           "scope": "comment.documentation",
@@ -149,30 +134,34 @@
     // Allow html in markdown.
     "MD033": false
   },
-  "markdownlint.ignore": [
-    "**/LICENSE"
-  ],
+  "markdownlint.ignore": ["**/LICENSE"],
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableMsBuildLoadProjectsOnDemand": false,
   "omnisharp.maxFindSymbolsItems": 3000,
   "omnisharp.useModernNet": true,
   // Remove these if you're happy with your terminal profiles.
-  "terminal.integrated.defaultProfile.windows": "Git Bash",
   "terminal.integrated.profiles.windows": {
-    "Command Prompt": {
-      "icon": "terminal-cmd",
-      "path": [
-        "${env:windir}\\Sysnative\\cmd.exe",
-        "${env:windir}\\System32\\cmd.exe"
-      ]
-    },
-    "Git Bash": {
-      "icon": "terminal",
-      "source": "Git Bash"
-    },
     "PowerShell": {
       "icon": "terminal-powershell",
       "source": "PowerShell"
     }
-  }
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "prettier.tabWidth": 4
+  },
+  "[csharp]": {
+    "editor.codeActionsOnSave": {
+      "source.addMissingImports": "explicit",
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": false
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
