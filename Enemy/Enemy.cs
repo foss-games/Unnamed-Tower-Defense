@@ -53,7 +53,7 @@ public partial class Enemy : CharacterBody2D
     public override void _PhysicsProcess(double delta)
     {
         var from = play.map.LocalToMap(GlobalPosition);
-        var to = play.map.LocalToMap(play.GameDef.EndLocation);
+        var to = (Vector2I)play.GameDef.EndLocation;
         Vector2[] path = AStarHex.GetPath(from, to);
 
         if (path.Length < 1)
