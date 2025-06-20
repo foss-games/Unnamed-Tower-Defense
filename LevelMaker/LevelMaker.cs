@@ -42,7 +42,7 @@ public partial class LevelMaker : Node2D
 
     public void OnButtonPressed()
     {
-        string output = "obstacles=[";
+        string output = "\"Obstacles\":[";
         foreach (Vector2I cell in map.GetUsedCells())
         {
             //Skip edge walls
@@ -53,16 +53,16 @@ public partial class LevelMaker : Node2D
 
             if ((bool)t.GetCustomData("solid"))
             {
-                output += $"{{{cell.X}, {cell.Y}}},";
+                output += $"{{\"X\": {cell.X}, \"Y\": {cell.Y}}},";
             }
             if ((bool)t.GetCustomData("startpos"))
             {
-                output = $"StartLocation={{{cell.X}, {cell.Y}}}," + output;
+                output = $"\"StartLocation\":{{\"X\": {cell.X}, \"Y\": {cell.Y}}}," + output;
                 //output += $"{{{cell.X}, {cell.Y}}},";
             }
             if ((bool)t.GetCustomData("endpos"))
             {
-                output = $"EndLocation={{{cell.X}, {cell.Y}}}," + output;
+                output = $"\"EndLocation\":{{\"X\": {cell.X}, \"Y\": {cell.Y}}}," + output;
             }
         }
 

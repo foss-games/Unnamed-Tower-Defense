@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using FOSSGames;
 using Godot;
@@ -73,13 +74,20 @@ public partial class Play : Node2D
 
     public TileMapLayer map;
 
-    public PoppableList<Wave> SpawningWaves = new PoppableList<Wave>();
+    public List<Wave> SpawningWaves = new List<Wave>();
     public AStarHexGrid2D AStarHex = new AStarHexGrid2D();
 
     public override void _Ready()
     {
         GD.Print("Play._Ready()");
-        TempInitGD();
+        //TempInitGD();
+        GameDef = LoadLevel();
+
+        map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
+        map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(1, 0));
+        map.SetCell((Vector2I)GameDef.EndLocation, 0, new Vector2I(2, 0));
+
+        InitObstacles();
 
         hud = GetNode<Hud>("Hud");
         waveTimer = GetNode<Timer>("WaveTimer");
@@ -87,10 +95,6 @@ public partial class Play : Node2D
 
         towersNode = GetNode<Node2D>("Towers");
         enemiesNode = GetNode<Node2D>("Enemies");
-
-        map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
-        map.SetCell(map.LocalToMap(GameDef.StartLocation), 0, new Vector2I(1, 0));
-        map.SetCell(map.LocalToMap(GameDef.EndLocation), 0, new Vector2I(2, 0));
 
         AStarHex.SetupHexGrid(map);
 
@@ -100,24 +104,32 @@ public partial class Play : Node2D
 
         waveTimer.WaitTime = GameDef.Waves[0].Interval;
         waveTimer.Start();
+        HP = GameDef.MaxHP;
+        Credits = GameDef.StartingCredits;
 
         hud.SetTimer(GameDef.Waves[0].Interval);
         hud.MaxWaves = GameDef.Waves.Count;
         hud.CurrentWave = 0;
         hud.MaxHP = GameDef.MaxHP;
-        HP = GameDef.MaxHP;
-
-        Credits = GameDef.StartingCredits;
 
 
-        JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new Vector2Converter());
-        options.Converters.Add(new Vector2IConverter());
-        JsonSerializer.Serialize(GameDef, options);
-        //load json
-        FOSSGames.Tower towerDef = JsonSerializer.Deserialize<FOSSGames.Tower>(File.ReadAllText(@"C:\temp\basictower.json"), options);
-        //construct tower
-        GD.Print(towerDef);
+
+        // JsonSerializerOptions options = new JsonSerializerOptions();
+        // options.Converters.Add(new Vector2Converter());
+        // options.Converters.Add(new Vector2IConverter());
+        // JsonSerializer.Serialize(GameDef, options);
+        // //load json
+        // FOSSGames.Tower towerDef = JsonSerializer.Deserialize<FOSSGames.Tower>(File.ReadAllText(@"C:\temp\basictower.json"), options);
+        // //construct tower
+        // GD.Print(towerDef);
+    }
+
+    public void InitObstacles()
+    {
+        foreach (Vector2 obs in GameDef.Obstacles)
+        {
+            map.SetCell((Vector2I)obs, 00, new Vector2I(3, 0));
+        }
     }
 
     public void NextWave()
@@ -125,7 +137,8 @@ public partial class Play : Node2D
         GD.Print("Play.NextWave()");
         waveTimer.Stop();
 
-        Wave wave = GameDef.Waves.PopFirst();
+        Wave wave = GameDef.Waves.First();
+        GameDef.Waves.Remove(wave);
 
         SpawningWaves.Add(wave);
 
@@ -147,90 +160,87 @@ public partial class Play : Node2D
     {
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new Vector2Converter());
+        options.Converters.Add(new Vector2IConverter());
+        using Godot.FileAccess file = Godot.FileAccess.Open("res://Levels/1.json", Godot.FileAccess.ModeFlags.Read);
 
-        //read json
-        string json = "";
-
-        JsonSerializer.Deserialize<Level>(json);
-
-        return new Level();
+        return JsonSerializer.Deserialize<Level>(file.GetAsText(), options);
     }
 
     public void TempInitGD()
     {
-        Level gd = new Level();
+        // Level gd = new Level();
 
-        gd.StartLocation = new Vector2I(68, 757);
-        gd.EndLocation = new Vector2I(454, 236);
-        gd.StartingCredits = 10;
-        gd.MaxHP = 10;
-        //gd.EndLocation
+        // gd.StartLocation = new Vector2I(68, 757);
+        // gd.EndLocation = new Vector2I(454, 236);
+        // gd.StartingCredits = 10;
+        // gd.MaxHP = 10;
+        // //gd.EndLocation
 
-        gd.Waves = [
-            new Wave
-            {
-                Interval = 5,
-                Enemies = new List<WaveEnemies>
-                {
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    }
-                }
-            },
-            new Wave
-            {
-                Interval = 5,
-                Enemies = new List<WaveEnemies>
-                {
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                }
-            },
-            new Wave
-            {
-                Interval = 10,
-                Enemies = new List<WaveEnemies>
-                {
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                    new WaveEnemies{
-                        Enemy = new Enemy(),
-                        Count = 1,
-                        Interval = 1.0f
-                    },
-                }
-            }
-        ];
-        GameDef = gd;
-        //GD.Print(JsonSerializer.Serialize(gd));
+        // gd.Waves = [
+        //     new Wave
+        //     {
+        //         Interval = 5,
+        //         Enemies = new List<WaveEnemies>
+        //         {
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             }
+        //         }
+        //     },
+        //     new Wave
+        //     {
+        //         Interval = 5,
+        //         Enemies = new List<WaveEnemies>
+        //         {
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //         }
+        //     },
+        //     new Wave
+        //     {
+        //         Interval = 10,
+        //         Enemies = new List<WaveEnemies>
+        //         {
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //             new WaveEnemies{
+        //                 Enemy = new Enemy(),
+        //                 Count = 1,
+        //                 Interval = 1.0f
+        //             },
+        //         }
+        //     }
+        // ];
+        // GameDef = gd;
+        // //GD.Print(JsonSerializer.Serialize(gd));
     }
 
     public void OnSpawnTimerTick()
@@ -244,7 +254,7 @@ public partial class Play : Node2D
                 SpawnEnemy();
                 wave.TimeSinceLastSpawn = 0;
                 wave.SpawnedCount++;
-                if (wave.SpawnedCount > wave.Enemies.Count)
+                if (wave.SpawnedCount >= wave.Enemies.Count)
                 {
                     SpawningWaves.Remove(wave);
                 }
@@ -257,9 +267,9 @@ public partial class Play : Node2D
     {
 
         Enemy enemy = enemyScene.Instantiate<Enemy>();
-        enemy.GlobalPosition = new Vector2(GameDef.StartLocation.X - 4, GameDef.StartLocation.Y - 12);
+        enemy.GlobalPosition = map.MapToLocal((Vector2I)GameDef.StartLocation);
         enemy.Visible = true;
-        enemy.TargetPosition = GameDef.EndLocation;
+        enemy.TargetPosition = map.MapToLocal((Vector2I)GameDef.EndLocation);
 
         enemiesNode.AddChild(enemy);
     }

@@ -1,11 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://cssu18csouqbd"]
+[gd_scene load_steps=3 format=3 uid="uid://cssu18csouqbd"]
 
+[ext_resource type="Script" uid="uid://cdg7ydseusbdg" path="res://Main Menu/MainMenu.cs" id="1_5ms5j"]
 [ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="1_ku1ks"]
 
 [node name="MainMenu" type="Node2D"]
+script = ExtResource("1_5ms5j")
 
 [node name="Background" parent="." instance=ExtResource("1_ku1ks")]
-position = Vector2(27.877, 35.7391)
 
 [node name="Label" type="Label" parent="."]
 offset_right = 587.0
@@ -25,3 +26,15 @@ offset_bottom = 715.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Play"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 468.0
+offset_top = 955.0
+offset_right = 582.0
+offset_bottom = 993.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Map Builder"
+
+[connection signal="pressed" from="Button" to="." method="OnPlayButton"]
+[connection signal="pressed" from="Button2" to="." method="OnMapButton"]
