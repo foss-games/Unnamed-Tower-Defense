@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Unnamed Tower Defense"
-run/main_scene="uid://b852g3l2xbbcx"
+run/main_scene="uid://cssu18csouqbd"
 run/print_header=false
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 boot_splash/show_image=false
@@ -25,7 +25,11 @@ settings/stdout/print_fps=true
 
 window/size/viewport_width=590
 window/size/viewport_height=1000
+window/size/resizable=false
+window/size/borderless=true
+window/stretch/mode="viewport"
 window/handheld/orientation=1
+window/vsync/vsync_mode=0
 
 [dotnet]
 

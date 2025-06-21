@@ -111,17 +111,6 @@ public partial class Play : Node2D
         hud.MaxWaves = GameDef.Waves.Count;
         hud.CurrentWave = 0;
         hud.MaxHP = GameDef.MaxHP;
-
-
-
-        // JsonSerializerOptions options = new JsonSerializerOptions();
-        // options.Converters.Add(new Vector2Converter());
-        // options.Converters.Add(new Vector2IConverter());
-        // JsonSerializer.Serialize(GameDef, options);
-        // //load json
-        // FOSSGames.Tower towerDef = JsonSerializer.Deserialize<FOSSGames.Tower>(File.ReadAllText(@"C:\temp\basictower.json"), options);
-        // //construct tower
-        // GD.Print(towerDef);
     }
 
     public void InitObstacles()

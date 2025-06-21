@@ -15,7 +15,7 @@ public partial class Greg : Node2D
     private Node2D towerCollection;
     private Tower tower;
     private Play play;
-
+    private Vector2I offset = new Vector2I(0, -60);
     private Label debugLabel;
 
     public override void _Ready()
@@ -48,10 +48,9 @@ public partial class Greg : Node2D
     public void TowerDropped()
     {
         if (!IsHeld) return;
-        //GD.Print(map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
         IsHeld = false;
         Tower newTower = (Tower)towerScene.Instantiate();
-        newTower.CallDeferred("Move", map.MapToLocal(map.LocalToMap(GetGlobalMousePosition())));
+        newTower.CallDeferred("Move", map.MapToLocal(map.LocalToMap(GetGlobalMousePosition() + offset)));
         towerCollection.AddChild(newTower);
         tower.GetNode<Sprite2D>("Circle").Visible = false;
 
@@ -62,11 +61,11 @@ public partial class Greg : Node2D
     {
         if (IsHeld)
         {
-            GlobalPosition = GetGlobalMousePosition();
+            GlobalPosition = GetGlobalMousePosition() + offset;
             QueueRedraw();
         }
         Vector2 mouse = GetGlobalMousePosition();
-        debugLabel.GlobalPosition = new Vector2(mouse.X - 50, mouse.Y - 10);
-        debugLabel.Text = map.LocalToMap(mouse).ToString() + "\n" + mouse.ToString();
+        // debugLabel.GlobalPosition = new Vector2(mouse.X - 50, mouse.Y - 10);
+        // debugLabel.Text = map.LocalToMap(mouse).ToString() + "\n" + mouse.ToString();
     }
 }

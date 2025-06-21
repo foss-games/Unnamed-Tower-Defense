@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Godot;
 using Godot.Collections;
 
@@ -7,7 +8,7 @@ using Godot.Collections;
 
 public partial class AStarHexGrid2D : AStar2D
 {
-    private Array<Vector2> pointsArray = [];
+    public Array<Vector2I> PointsArray = [];
     private TileMapLayer map;
     private string solidDataName = "solid";
 
@@ -31,9 +32,9 @@ public partial class AStarHexGrid2D : AStar2D
 
     public int AddHexPoint(Vector2I point)
     {
-        int currentID = pointsArray.Count;
+        int currentID = PointsArray.Count;
         AddPoint(currentID, map.MapToLocal(point));
-        pointsArray.Add(point);
+        PointsArray.Add(point);
         return currentID;
     }
 
@@ -42,17 +43,17 @@ public partial class AStarHexGrid2D : AStar2D
         int x = point.X;
         int y = point.Y;
 
-        int center = pointsArray.IndexOf(point);
+        int center = PointsArray.IndexOf(point);
 
-        int top = pointsArray.IndexOf(new Vector2(x, y - 1));
-        int right = pointsArray.IndexOf(new Vector2(x + 1, y));
-        int bottom = pointsArray.IndexOf(new Vector2(x, y + 1));
-        int left = pointsArray.IndexOf(new Vector2(x - 1, y));
+        int top = PointsArray.IndexOf(new Vector2I(x, y - 1));
+        int right = PointsArray.IndexOf(new Vector2I(x + 1, y));
+        int bottom = PointsArray.IndexOf(new Vector2I(x, y + 1));
+        int left = PointsArray.IndexOf(new Vector2I(x - 1, y));
 
-        int topRight = pointsArray.IndexOf(new Vector2(x + 1, y - 1));
-        int topLeft = pointsArray.IndexOf(new Vector2(x - 1, y - 1));
-        int bottomRight = pointsArray.IndexOf(new Vector2(x + 1, y + 1));
-        int bottomLeft = pointsArray.IndexOf(new Vector2(x - 1, y + 1));
+        int topRight = PointsArray.IndexOf(new Vector2I(x + 1, y - 1));
+        int topLeft = PointsArray.IndexOf(new Vector2I(x - 1, y - 1));
+        int bottomRight = PointsArray.IndexOf(new Vector2I(x + 1, y + 1));
+        int bottomLeft = PointsArray.IndexOf(new Vector2I(x - 1, y + 1));
 
         if (HasPoint(top))
             ConnectPoints(center, top);
@@ -102,7 +103,7 @@ public partial class AStarHexGrid2D : AStar2D
 
     public int CoordsToID(Vector2I coord)
     {
-        return pointsArray.IndexOf(coord);
+        return PointsArray.IndexOf(coord);
     }
 
     public Vector2[] GetPath(Vector2I fromPoint, Vector2I toPoint)

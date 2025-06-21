@@ -1,10 +1,5 @@
-using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
 using Godot;
-using Godot.Collections;
 
 public partial class Tower : Node2D
 {
@@ -59,14 +54,17 @@ public partial class Tower : Node2D
 
     public bool PlacementWillBlockPath(Vector2I destination)
     {
-        //disconnct from all neighbors to prevent pathing
-        RemovePointFromNavigation(destination);
+        using AStarHexGrid2D astar = new AStarHexGrid2D();
+        astar.SetupHexGrid(play.map);
 
-        Vector2[] path = play.AStarHex.GetPath(play.map.LocalToMap(play.GameDef.StartLocation), play.map.LocalToMap(play.GameDef.EndLocation));
+        int cellID = astar.CoordsToID(play.map.LocalToMap(destination));
+        foreach (long connId in astar.GetPointConnections(cellID))
+        {
+            astar.DisconnectPoints(cellID, connId, true);
+        }
+        astar.RemovePoint(cellID);
 
-        //re-add the point and reconnect the cell to it's neighbors
-        play.AStarHex.AddHexPoint(play.map.LocalToMap(destination));
-        play.AStarHex.ConnectHexPont(play.map.LocalToMap(destination));
+        Vector2[] path = astar.GetPath((Vector2I)play.GameDef.StartLocation, (Vector2I)play.GameDef.EndLocation);
 
         return path.Length < 1;
     }
@@ -81,9 +79,9 @@ public partial class Tower : Node2D
         play.AStarHex.RemovePoint(cellID);
     }
 
-
     public void Move(Vector2I destination)
     {
+        if (destination.X == 0 || destination.Y == 0) return;
         if (towermask.GetCellTileData(towermask.LocalToMap(destination)) != null)
         {
             return;
@@ -104,7 +102,6 @@ public partial class Tower : Node2D
         map.SetCell(map.LocalToMap(Position), 0, new Vector2I(0, 0));
         QueueFree();
     }
-
     public void OnShotTimerTimeout()
     {
         if (!AIEnabled) return;
@@ -126,7 +123,6 @@ public partial class Tower : Node2D
         p.Damage = Damage;
         p.Start(this, target);
     }
-
     public override void _PhysicsProcess(double delta)
     {
         if (!AIEnabled) return;
@@ -148,7 +144,7 @@ public partial class Tower : Node2D
 
             Enemy target = visibleEnemies.First();
             LookAt(target.GlobalPosition);
-            RotationDegrees += 45;
+            RotationDegrees += 90;
         }
     }
 }
