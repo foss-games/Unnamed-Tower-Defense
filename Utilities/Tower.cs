@@ -34,16 +34,6 @@ namespace FOSSGames
         public double TravelSpeed;
     }
 
-    public class ProjectileAttackDetails : AttackDetails
-    {
-        //
-    }
-
-    public class MissileAttackDetails : AttackDetails
-    {
-        //
-    }
-
     public enum AttackTypes
     {
         Projectile,
