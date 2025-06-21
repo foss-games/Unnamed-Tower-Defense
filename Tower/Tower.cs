@@ -140,7 +140,6 @@ public partial class Tower : Node2D
 
             Enemy target = visibleEnemies.First();
             LookAt(target.GlobalPosition);
-            RotationDegrees += 90;
         }
     }
 }
