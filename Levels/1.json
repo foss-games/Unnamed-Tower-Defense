@@ -1,13 +1,14 @@
 {
   "EndLocation": { "X": 20, "Y": 12 },
   "StartLocation": { "X": 2, "Y": 12 },
-  "StartingCredits": 14,
+  "StartingCredits": 15,
   "MaxHP": 10,
   "Waves": [
     {
       "Interval": 5,
       "Enemies": [
         {
+          "GUID": "de17349b-ac1e-4546-807c-71851f0b6416",
           "Count": 1,
           "Interval": 0.33
         }
@@ -17,6 +18,7 @@
       "Interval": 2,
       "Enemies": [
         {
+          "GUID": "91b7defe-0e1c-4f42-81c5-abe7aa580e99",
           "Count": 2,
           "Interval": 0.33
         }
@@ -26,7 +28,28 @@
       "Interval": 2,
       "Enemies": [
         {
+          "GUID": "f2c6ed4b-67ce-47d0-a458-3d01a535e420",
           "Count": 3,
+          "Interval": 0.33
+        }
+      ]
+    },
+    {
+      "Interval": 2,
+      "Enemies": [
+        {
+          "GUID": "bf17c3a4-a117-409f-b5bc-65152abe99d1",
+          "Count": 4,
+          "Interval": 0.33
+        }
+      ]
+    },
+    {
+      "Interval": 3,
+      "Enemies": [
+        {
+          "GUID": "bf17c3a4-a117-409f-b5bc-65152abe99d1",
+          "Count": 1,
           "Interval": 0.33
         }
       ]
