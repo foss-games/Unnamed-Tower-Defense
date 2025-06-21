@@ -27,6 +27,8 @@ public partial class Tower : Node2D
 
     private NavigationAgent2D NavAgent;
 
+    public Vector2 Offset;
+
     public override void _Ready()
     {
         RateOfFire = 0.5;
@@ -88,8 +90,8 @@ public partial class Tower : Node2D
         }
         if (PlacementWillBlockPath(destination)) return;
 
-        map.SetCell(map.LocalToMap(destination), 0, new Vector2I(4, 0));
-        towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(4, 0));
+        map.SetCell(map.LocalToMap(destination), 0, new Vector2I(1, 0));
+        towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(1, 0));
         RemovePointFromNavigation(destination);
 
         GlobalPosition = destination;

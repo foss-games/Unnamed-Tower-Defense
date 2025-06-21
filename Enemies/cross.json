@@ -1,0 +1,25 @@
+{
+  "GUID": "91b7defe-0e1c-4f42-81c5-abe7aa580e99",
+  "Sprite": {
+    "Frame": 3,
+    "Scale": {
+      "X": 1,
+      "Y": 1
+    },
+    "Modulate": {
+      "R": 0.8,
+      "G": 0.8,
+      "B": 0.1,
+      "A": 1.0
+    }
+  },
+  "Reward": 3,
+  "HP": 1,
+  "Speed": 1,
+  "Upgrade": {
+    "HP": 1,
+    "HPMult": 1,
+    "Speed": 1,
+    "SpeedMult": 1
+  }
+}

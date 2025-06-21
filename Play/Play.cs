@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -76,16 +77,18 @@ public partial class Play : Node2D
 
     public List<Wave> SpawningWaves = new List<Wave>();
     public AStarHexGrid2D AStarHex = new AStarHexGrid2D();
+    public List<FOSSGames.Enemy> EnemyTypes = new List<FOSSGames.Enemy>();
 
     public override void _Ready()
     {
         GD.Print("Play._Ready()");
         //TempInitGD();
+        LoadEnemies();
         GameDef = LoadLevel();
 
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
-        map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(1, 0));
-        map.SetCell((Vector2I)GameDef.EndLocation, 0, new Vector2I(2, 0));
+        map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(2, 0));
+        map.SetCell((Vector2I)GameDef.EndLocation, 0, new Vector2I(3, 0));
 
         InitObstacles();
 
@@ -99,8 +102,8 @@ public partial class Play : Node2D
         AStarHex.SetupHexGrid(map);
 
         TileMapLayer towerMask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
-        towerMask.SetCell(towerMask.LocalToMap(GameDef.StartLocation), 0, new Vector2I(1, 0));
-        towerMask.SetCell(towerMask.LocalToMap(GameDef.EndLocation), 0, new Vector2I(2, 0));
+        towerMask.SetCell(towerMask.LocalToMap(GameDef.StartLocation), 0, new Vector2I(2, 0));
+        towerMask.SetCell(towerMask.LocalToMap(GameDef.EndLocation), 0, new Vector2I(3, 0));
 
         waveTimer.WaitTime = GameDef.Waves[0].Interval;
         waveTimer.Start();
@@ -117,7 +120,7 @@ public partial class Play : Node2D
     {
         foreach (Vector2 obs in GameDef.Obstacles)
         {
-            map.SetCell((Vector2I)obs, 00, new Vector2I(3, 0));
+            map.SetCell((Vector2I)obs, 00, new Vector2I(1, 0));
         }
     }
 
@@ -145,102 +148,47 @@ public partial class Play : Node2D
         waveTimer.Start();
     }
 
+    public void LoadEnemies()
+    {
+        using DirAccess dir = DirAccess.Open("res://Enemies/");
+        if (dir == null) throw new System.Exception("Unable to load enemies.");
+
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.Converters.Add(new Vector2Converter());
+        options.Converters.Add(new Vector2IConverter());
+        options.Converters.Add(new EnemyConverter());
+
+        foreach (string filename in dir.GetFiles())
+        {
+            string json = Godot.FileAccess.Open("res://Enemies/" + filename, Godot.FileAccess.ModeFlags.Read).GetAsText();
+
+            EnemyTypes.Add(JsonSerializer.Deserialize<FOSSGames.Enemy>(json, options));
+        }
+        return;
+    }
+
     public Level LoadLevel()
     {
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new Vector2Converter());
         options.Converters.Add(new Vector2IConverter());
+        options.Converters.Add(new EnemyConverter());
         using Godot.FileAccess file = Godot.FileAccess.Open("res://Levels/1.json", Godot.FileAccess.ModeFlags.Read);
 
-        return JsonSerializer.Deserialize<Level>(file.GetAsText(), options);
-    }
-
-    public void TempInitGD()
-    {
-        // Level gd = new Level();
-
-        // gd.StartLocation = new Vector2I(68, 757);
-        // gd.EndLocation = new Vector2I(454, 236);
-        // gd.StartingCredits = 10;
-        // gd.MaxHP = 10;
-        // //gd.EndLocation
-
-        // gd.Waves = [
-        //     new Wave
-        //     {
-        //         Interval = 5,
-        //         Enemies = new List<WaveEnemies>
-        //         {
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             }
-        //         }
-        //     },
-        //     new Wave
-        //     {
-        //         Interval = 5,
-        //         Enemies = new List<WaveEnemies>
-        //         {
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //         }
-        //     },
-        //     new Wave
-        //     {
-        //         Interval = 10,
-        //         Enemies = new List<WaveEnemies>
-        //         {
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //             new WaveEnemies{
-        //                 Enemy = new Enemy(),
-        //                 Count = 1,
-        //                 Interval = 1.0f
-        //             },
-        //         }
-        //     }
-        // ];
-        // GameDef = gd;
-        // //GD.Print(JsonSerializer.Serialize(gd));
+        Level level = JsonSerializer.Deserialize<Level>(file.GetAsText(), options);
+        return level;
     }
 
     public void OnSpawnTimerTick()
     {
-        foreach (Wave wave in SpawningWaves)
+        foreach (Wave wave in SpawningWaves.ToArray())
         {
             if (wave.SpawnedCount >= wave.Enemies.Count) continue;
 
             if (wave.TimeSinceLastSpawn >= wave.Enemies[wave.SpawnedCount].Interval)
             {
-                SpawnEnemy();
+
+                SpawnEnemy(wave.Enemies[wave.SpawnedCount].GUID);
                 wave.TimeSinceLastSpawn = 0;
                 wave.SpawnedCount++;
                 if (wave.SpawnedCount >= wave.Enemies.Count)
@@ -252,14 +200,13 @@ public partial class Play : Node2D
         }
     }
 
-    public void SpawnEnemy()
+    public void SpawnEnemy(Guid guid)
     {
-
         Enemy enemy = enemyScene.Instantiate<Enemy>();
         enemy.GlobalPosition = map.MapToLocal((Vector2I)GameDef.StartLocation);
-        enemy.Visible = true;
         enemy.TargetPosition = map.MapToLocal((Vector2I)GameDef.EndLocation);
-
         enemiesNode.AddChild(enemy);
+        enemy.LoadStats(guid);
+        //enemy.CallDeferred("LoadStats", guid.ToString());
     }
 }

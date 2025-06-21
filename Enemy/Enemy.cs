@@ -1,11 +1,12 @@
 using System;
-using System.Collections;
-using System.Data;
-using System.Linq;
+using FOSSGames;
 using Godot;
 
 public partial class Enemy : CharacterBody2D
 {
+    public Guid GUID;
+    public int Level = 1;
+    public EnemyUpgrade Upgrade;
     private double _hp;
     public double HP
     {
@@ -20,34 +21,41 @@ public partial class Enemy : CharacterBody2D
             if (_hp <= 0) Die();
         }
     }
-
     public double Reward;
     public double Speed;
-
-    public new bool Visible = false;
-
     public Vector2 TargetPosition;
-    private Label text;
-
     private float _movementDelta;
-
     Play play;
-
     private AStarHexGrid2D AStarHex;
-
     private Line2D pathLine;
+
+    public bool DrawPath = false;
+
+    private Sprite2D sprite;
 
     public override void _Ready()
     {
-        text = GetNode<Label>("Label");
         play = (Play)GetTree().GetFirstNodeInGroup("play");
+        sprite = GetNode<Sprite2D>("sprite");
         AStarHex = play.AStarHex;
 
         pathLine = GetNode<Line2D>("path");
+    }
 
-        Speed = 20;
-        HP = 20;
-        Reward = 5;
+    public void LoadStats(Guid guid)
+    {
+        FOSSGames.Enemy stats = play.EnemyTypes.Find(e => e.GUID == guid);
+
+        HP = stats.HP;
+        Speed = stats.Speed;
+        Upgrade = stats.Upgrade;
+        Reward = stats.Reward;
+
+        sprite.Frame = stats.Sprite.Frame;
+        sprite.Scale = stats.Sprite.Scale;
+        sprite.Modulate = stats.Sprite.Modulate;
+
+        Visible = true;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -61,13 +69,16 @@ public partial class Enemy : CharacterBody2D
             return;
         }
 
-        //show path, useful for debug
-        pathLine.ClearPoints();
-        foreach (Vector2 point in path)
+        if (DrawPath)
         {
-            pathLine.AddPoint(pathLine.ToLocal(point));
+            //show path, useful for debug
+            pathLine.ClearPoints();
+            foreach (Vector2 point in path)
+            {
+                pathLine.AddPoint(pathLine.ToLocal(point));
+            }
+            pathLine.QueueRedraw();
         }
-        pathLine.QueueRedraw();
 
         Vector2 nextPosition = play.map.ToGlobal(path[1]);
         Velocity = Position.DirectionTo(nextPosition) * (float)Speed;

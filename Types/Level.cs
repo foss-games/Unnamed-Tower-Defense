@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Godot;
@@ -29,14 +30,13 @@ namespace FOSSGames
         [JsonInclude]
         public int SpawnedCount = 0;
         [JsonInclude]
-        public List<WaveEnemies> Enemies;
-
+        public List<WaveEnemy> Enemies;
     }
 
-    public class WaveEnemies
+    public class WaveEnemy
     {
         [JsonInclude]
-        public Enemy Enemy;
+        public Guid GUID;
         [JsonInclude]
         public int Count;
         [JsonInclude]

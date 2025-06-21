@@ -6,10 +6,11 @@ namespace FOSSGames
     public class Sprite
     {
         [JsonInclude]
-        public string SpriteSheet;
+        public int Frame;
         [JsonInclude]
-        public double Scale;
-
+        public Vector2 Scale;
+        [JsonInclude]
+        public Color Modulate;
     }
     public class Attack
     {

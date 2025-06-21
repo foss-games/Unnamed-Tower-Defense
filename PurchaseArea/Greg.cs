@@ -50,6 +50,7 @@ public partial class Greg : Node2D
         if (!IsHeld) return;
         IsHeld = false;
         Tower newTower = (Tower)towerScene.Instantiate();
+        newTower.Offset = offset;
         newTower.CallDeferred("Move", map.MapToLocal(map.LocalToMap(GetGlobalMousePosition() + offset)));
         towerCollection.AddChild(newTower);
         tower.GetNode<Sprite2D>("Circle").Visible = false;
