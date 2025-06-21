@@ -10,7 +10,7 @@ public partial class Tower : Node2D
     public int Cost;
 
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
-    public Godot.Timer ShotTimer;
+    public Timer ShotTimer;
 
     private Node2D projectilesNode;
 
@@ -48,7 +48,7 @@ public partial class Tower : Node2D
 
         circle.Scale *= TargetingRange;
 
-        map = (TileMapLayer)GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer");
+        map = GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer");
         towermask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
     }
 
@@ -108,13 +108,11 @@ public partial class Tower : Node2D
         var enemies = GetTree().GetNodesInGroup("enemies");
         var targetableEnemies = from Enemy enemy in enemies
                                 let d = enemy.GlobalPosition.DistanceSquaredTo(GlobalPosition)
-                                where d <= TargetingRange * 1234 * 2
+                                where d <= TargetingRange * 1234 * 2 //FIX ME--------------
                                 orderby d
                                 select enemy;
 
         if (!targetableEnemies.Any()) return;
-        //enemy is in range to be shoot
-        //shoot
         Enemy target = targetableEnemies.First();
 
         Projectile p = projectileScene.Instantiate<Projectile>();
@@ -126,17 +124,13 @@ public partial class Tower : Node2D
     public override void _PhysicsProcess(double delta)
     {
         if (!AIEnabled) return;
-        //look at nearest bad guy in range * 2
-        //shoot at bad guy in range until out of range
-        //      then pick new bad guy
 
-        //get enemies
         var enemies = GetTree().GetNodesInGroup("enemies");
         if (enemies.Count > 0)
         {
             var visibleEnemies = from Enemy enemy in enemies
                                  let d = enemy.GlobalPosition.DistanceSquaredTo(GlobalPosition)
-                                 where d <= VisionRange * 1234 * 2
+                                 where d <= VisionRange * 1234 * 2 //FIX ME--------------
                                  orderby d
                                  select enemy;
 
