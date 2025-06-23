@@ -13,9 +13,9 @@
       "A": 1.0
     }
   },
-  "Reward": 3,
-  "HP": 1,
-  "Speed": 1,
+  "Reward": 2,
+  "HP": 10,
+  "Speed": 40,
   "Upgrade": {
     "HP": 1,
     "HPMult": 1,

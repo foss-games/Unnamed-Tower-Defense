@@ -1,7 +1,7 @@
 {
   "EndLocation": { "X": 20, "Y": 12 },
   "StartLocation": { "X": 2, "Y": 12 },
-  "StartingCredits": 15,
+  "StartingCredits": 10000000,
   "MaxHP": 10,
   "Waves": [
     {
@@ -9,17 +9,17 @@
       "Enemies": [
         {
           "GUID": "de17349b-ac1e-4546-807c-71851f0b6416",
-          "Count": 1,
-          "Interval": 0.33
+          "Count": 5,
+          "Interval": 0.5
         }
       ]
     },
     {
-      "Interval": 2,
+      "Interval": 5,
       "Enemies": [
         {
           "GUID": "91b7defe-0e1c-4f42-81c5-abe7aa580e99",
-          "Count": 2,
+          "Count": 6,
           "Interval": 0.33
         }
       ]
