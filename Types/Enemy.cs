@@ -12,9 +12,4 @@ namespace FOSSGames
         public double Reward;
         public EnemyUpgrade Upgrade;
     }
-    public struct EnemyDTO
-    {
-        public int Count;
-        public double Interval;
-    }
 }
