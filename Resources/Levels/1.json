@@ -3,6 +3,7 @@
   "StartLocation": { "X": 2, "Y": 12 },
   "StartingCredits": 10,
   "MaxHP": 10,
+  "AvailableTowers": [""],
   "Waves": [
     {
       "Interval": 5,
