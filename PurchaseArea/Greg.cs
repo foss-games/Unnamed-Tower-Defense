@@ -1,5 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using Godot;
 
 public partial class Greg : Node2D
