@@ -25,10 +25,9 @@ namespace FOSSGames
     {
         [JsonInclude]
         public int Interval;
-        [JsonInclude]
         public float TimeSinceLastSpawn = 0;
-        [JsonInclude]
         public int SpawnedCount = 0;
+        public int EnemySet = 0;
         [JsonInclude]
         public List<WaveEnemy> Enemies;
     }
@@ -40,6 +39,6 @@ namespace FOSSGames
         [JsonInclude]
         public int Count;
         [JsonInclude]
-        public float Interval = 1.0f;
+        public double Interval;
     }
 }
