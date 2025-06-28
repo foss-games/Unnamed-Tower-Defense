@@ -47,7 +47,7 @@ namespace FOSSGames
         [JsonInclude]
         public UpgradeEffect[] UpgradeEffects;
         [JsonInclude]
-        public Vector2[]? Markers;
+        public Vector2[] Markers;
     }
 
     public class UpgradeEffect

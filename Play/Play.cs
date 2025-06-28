@@ -198,8 +198,8 @@ public partial class Play : Node2D
 
     public void LoadEnemies()
     {
-        using DirAccess dir = DirAccess.Open("res://Enemies/");
-        if (dir == null) throw new System.Exception("Unable to load enemies.");
+        using DirAccess dir = DirAccess.Open("res://Resources/Enemies/");
+        if (dir == null) throw new Exception("Unable to load enemies.");
 
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new Vector2Converter());
@@ -208,7 +208,8 @@ public partial class Play : Node2D
 
         foreach (string filename in dir.GetFiles())
         {
-            string json = Godot.FileAccess.Open("res://Enemies/" + filename, Godot.FileAccess.ModeFlags.Read).GetAsText();
+            if (!filename.EndsWith("json")) continue;
+            string json = FileAccess.Open("res://Resources/Enemies/" + filename, FileAccess.ModeFlags.Read).GetAsText();
 
             EnemyTypes.Add(JsonSerializer.Deserialize<FOSSGames.Enemy>(json, options));
         }
@@ -221,20 +222,17 @@ public partial class Play : Node2D
         options.Converters.Add(new Vector2Converter());
         options.Converters.Add(new Vector2IConverter());
         options.Converters.Add(new EnemyConverter());
-        using Godot.FileAccess file = Godot.FileAccess.Open("res://Levels/1.json", Godot.FileAccess.ModeFlags.Read);
+        using FileAccess file = FileAccess.Open("res://Resources/Levels/1.json", FileAccess.ModeFlags.Read);
 
-        Level level = JsonSerializer.Deserialize<Level>(file.GetAsText(), options);
-        return level;
+        return JsonSerializer.Deserialize<Level>(file.GetAsText(), options);
     }
-
-
 
     public void SpawnEnemy(Guid guid)
     {
         Enemy enemy = enemyScene.Instantiate<Enemy>();
         enemy.GlobalPosition = map.MapToLocal((Vector2I)GameDef.StartLocation);
         enemy.TargetPosition = map.MapToLocal((Vector2I)GameDef.EndLocation);
-        enemy.DrawPath = true;
+        enemy.DrawPath = false;
         enemiesNode.AddChild(enemy);
         enemy.LoadStats(guid);
     }

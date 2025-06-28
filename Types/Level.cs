@@ -19,6 +19,8 @@ namespace FOSSGames
         public int MaxHP;
         [JsonInclude]
         public List<Wave> Waves;
+        [JsonInclude]
+        public string[] AvailableTowers;
     }
 
     public class Wave

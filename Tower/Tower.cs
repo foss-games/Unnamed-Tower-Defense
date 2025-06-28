@@ -90,8 +90,8 @@ public partial class Tower : Node2D
         }
         if (PlacementWillBlockPath(destination)) return;
 
-        map.SetCell(map.LocalToMap(destination), 0, new Vector2I(1, 0));
-        towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(1, 0));
+        //map.SetCell(map.LocalToMap(destination), 0, new Vector2I(1, 0));
+        //towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(1, 0));
         RemovePointFromNavigation(destination);
 
         GlobalPosition = destination;
