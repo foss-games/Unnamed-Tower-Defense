@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using FOSSGames;
@@ -75,9 +74,9 @@ public partial class Play : Node2D
 
     public TileMapLayer map;
 
-    public List<Wave> SpawningWaves = new List<Wave>();
     public AStarHexGrid2D AStarHex = new AStarHexGrid2D();
     public List<FOSSGames.Enemy> EnemyTypes = new List<FOSSGames.Enemy>();
+    public List<WaveEnemy> SpawnSchedule = [];
 
     public override void _Ready()
     {
@@ -129,16 +128,15 @@ public partial class Play : Node2D
         GD.Print("Play.NextWave()");
         waveTimer.Stop();
 
-        Wave wave = GameDef.Waves.First();
-        GameDef.Waves.Remove(wave);
-
-        SpawningWaves.Add(wave);
-
         if (GameDef.Waves.Count <= 0)
         {
             //no more waves to spawn
             return;
         }
+
+        Wave wave = GameDef.Waves.First();
+        GameDef.Waves.Remove(wave);
+
         //update ui for new wave
         hud.SetTimer(wave.Interval);
         hud.CurrentWave++;
@@ -146,6 +144,56 @@ public partial class Play : Node2D
         //update wave timer
         waveTimer.WaitTime = wave.Interval;
         waveTimer.Start();
+
+        lock (SpawnSchedule)
+        {
+            SpawnSchedule.AddRange(CreateSpawnSchedule(wave));
+            SpawnSchedule.Sort((a, b) => a.Interval > b.Interval ? 1 : -1);
+        }
+    }
+
+    public void OnSpawnTimerTick()
+    {
+        List<WaveEnemy> completed = [];
+        foreach (WaveEnemy spawn in SpawnSchedule)
+        {
+            if (spawn.Interval <= spawnTimer.WaitTime)
+            {
+                SpawnEnemy(spawn.GUID);
+                if (--spawn.Count <= 0)
+                {
+                    completed.Add(spawn);
+                }
+            }
+            else
+            {
+                spawn.Interval -= spawnTimer.WaitTime;
+            }
+        }
+        lock (SpawnSchedule)
+        {
+            SpawnSchedule.RemoveAll(a => completed.IndexOf(a) > -1);
+        }
+    }
+
+    public static List<WaveEnemy> CreateSpawnSchedule(Wave wave)
+    {
+        List<WaveEnemy> schedule = [];
+        double delay = 0;
+        foreach (WaveEnemy spawn in wave.Enemies)
+        {
+            for (int i = 0; i < spawn.Count; i++)
+            {
+                WaveEnemy nspawn = new WaveEnemy()
+                {
+                    GUID = spawn.GUID,
+                    Interval = spawn.Interval + delay
+                };
+                delay += spawn.Interval;
+                schedule.Add(nspawn);
+            }
+        }
+        return schedule;
     }
 
     public void LoadEnemies()
@@ -179,34 +227,15 @@ public partial class Play : Node2D
         return level;
     }
 
-    public void OnSpawnTimerTick()
-    {
-        foreach (Wave wave in SpawningWaves.ToArray())
-        {
-            if (wave.SpawnedCount >= wave.Enemies.Count) continue;
 
-            if (wave.TimeSinceLastSpawn >= wave.Enemies[wave.SpawnedCount].Interval)
-            {
-
-                SpawnEnemy(wave.Enemies[wave.SpawnedCount].GUID);
-                wave.TimeSinceLastSpawn = 0;
-                wave.SpawnedCount++;
-                if (wave.SpawnedCount >= wave.Enemies.Count)
-                {
-                    SpawningWaves.Remove(wave);
-                }
-            }
-            wave.TimeSinceLastSpawn += 0.25f;
-        }
-    }
 
     public void SpawnEnemy(Guid guid)
     {
         Enemy enemy = enemyScene.Instantiate<Enemy>();
         enemy.GlobalPosition = map.MapToLocal((Vector2I)GameDef.StartLocation);
         enemy.TargetPosition = map.MapToLocal((Vector2I)GameDef.EndLocation);
+        enemy.DrawPath = true;
         enemiesNode.AddChild(enemy);
         enemy.LoadStats(guid);
-        //enemy.CallDeferred("LoadStats", guid.ToString());
     }
 }
