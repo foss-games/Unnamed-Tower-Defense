@@ -79,6 +79,10 @@ public partial class Play : Node2D
     public AStarHexGrid2D AStarHex = new AStarHexGrid2D();
     public List<WaveEnemy> SpawnSchedule = [];
 
+    public LevelState State = LevelState.Running;
+    [Signal]
+    public delegate void LevelStateChangedEventHandler();
+
     public override void _Ready()
     {
         GD.Print("Play._Ready()");
@@ -124,10 +128,12 @@ public partial class Play : Node2D
 
     public override void _Process(double delta)
     {
-        if (SpawnSchedule.Count < 1 && //no pending spawns
+        if (State == LevelState.Running &&
+            SpawnSchedule.Count < 1 && //no pending spawns
             GameDef.Waves.Count < 1 && //no pending waves
             GetTree().GetNodesInGroup("enemies").Count < 1) //no spawned enemies
         {
+            State = LevelState.Complete;
             EmitSignal(SignalName.LevelWon);
         }
     }

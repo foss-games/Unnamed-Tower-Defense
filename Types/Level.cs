@@ -44,4 +44,10 @@ namespace FOSSGames
         [JsonInclude]
         public double Interval;
     }
+
+    public enum LevelState
+    {
+        Running,
+        Complete
+    }
 }

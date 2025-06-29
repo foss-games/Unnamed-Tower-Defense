@@ -1,3 +1,4 @@
+using FOSSGames;
 using Godot;
 
 public partial class EndMenu : Node2D
@@ -17,6 +18,14 @@ public partial class EndMenu : Node2D
         {
             GetNode<Label>("Label").Text = "Congratulations!";
             grid.GetNode<Button>("ContinueButton").Text = "Next Level!";
+            if (Global.Instance.SelectedLevelIndex >= Global.Instance.Levels.Count)
+            {
+                grid.GetNode<Button>("ContinueButton").Visible = false;
+            }
+            else
+            {
+                Global.Instance.SelectedLevelIndex++;
+            }
         };
     }
 
