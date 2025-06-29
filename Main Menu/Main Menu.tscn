@@ -8,17 +8,16 @@ script = ExtResource("1_5ms5j")
 
 [node name="Background" parent="." instance=ExtResource("1_ku1ks")]
 
-[node name="Label" type="Label" parent="."]
+[node name="Title" type="Label" parent="."]
 offset_right = 587.0
-offset_bottom = 346.0
+offset_bottom = 228.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 60
-text = " Tower
-Defense"
+text = "Choose a Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="."]
+[node name="PlayButton" type="Button" parent="."]
 offset_left = 208.0
 offset_top = 606.0
 offset_right = 411.0
@@ -27,7 +26,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Play"
 
-[node name="Button2" type="Button" parent="."]
+[node name="MapMakerButton" type="Button" parent="."]
 offset_left = 468.0
 offset_top = 955.0
 offset_right = 582.0
@@ -36,5 +35,26 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Map Builder"
 
-[connection signal="pressed" from="Button" to="." method="OnPlayButton"]
-[connection signal="pressed" from="Button2" to="." method="OnMapButton"]
+[node name="GridContainer" type="GridContainer" parent="."]
+visible = false
+offset_left = 38.0
+offset_top = 284.0
+offset_right = 564.0
+offset_bottom = 839.0
+size_flags_horizontal = 6
+columns = 4
+
+[node name="BackButton" type="Button" parent="."]
+visible = false
+offset_left = 228.0
+offset_top = 926.0
+offset_right = 328.0
+offset_bottom = 989.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 40
+text = "Back"
+
+[connection signal="pressed" from="PlayButton" to="." method="OnPlayButton"]
+[connection signal="pressed" from="MapMakerButton" to="." method="OnMapButton"]
+[connection signal="pressed" from="BackButton" to="." method="OnPlayButton"]
