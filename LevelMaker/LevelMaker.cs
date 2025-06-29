@@ -6,6 +6,8 @@ using Godot.Collections;
 public partial class LevelMaker : Node2D
 {
     private TileMapLayer map;
+    private bool startSet = false;
+    private bool endSet = false;
     public override void _Ready()
     {
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
@@ -30,7 +32,41 @@ public partial class LevelMaker : Node2D
                 {
                     type = (int)data.GetCustomData("cellType");
                     type++;
-                    if (type > 3) type = 0;
+                    switch (type)
+                    {
+                        case 0:
+                        case 1:
+                            break;
+                        case 2: //start
+                            if (startSet && endSet)
+                            {
+                                type = 0;
+                                break;
+                            }
+                            if (startSet)
+                            {
+                                type++;
+                                endSet = true;
+                                break;
+                            }
+                            startSet = true;
+                            break;
+                        case 3: //end
+                            if (endSet)
+                            {
+                                type = 0;
+                            }
+                            endSet = true;
+                            startSet = false;
+                            break;
+                        case 4:
+                            endSet = false;
+                            type = 0;
+                            break;
+                        default:
+                            type = 0;
+                            break;
+                    }
                 }
 
                 map.SetCell(cell, 0, new Vector2I(type, 0));
