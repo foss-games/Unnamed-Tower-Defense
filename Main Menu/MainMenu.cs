@@ -20,7 +20,7 @@ public partial class MainMenu : Node2D
         {
             CustomDataButton button = new CustomDataButton();
             button.CustomData = i;
-            button.MyPressed += OnLevelSelection;
+            button.PressedWithData += OnLevelSelection;
             button.Text = $"Level {i}";
             button.AddThemeFontSizeOverride("font_size", 30);
             gridContainer.AddChild(button);

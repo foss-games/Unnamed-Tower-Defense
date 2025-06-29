@@ -5,7 +5,7 @@ namespace FOSSGames
     public partial class CustomDataButton : Button
     {
         [Signal]
-        public delegate void MyPressedEventHandler(Variant customData);
+        public delegate void PressedWithDataEventHandler(Variant customData);
         public Variant CustomData;
         public override void _Ready()
         {
@@ -14,7 +14,7 @@ namespace FOSSGames
         }
         private void PressedHandler()
         {
-            EmitSignal(SignalName.MyPressed, CustomData);
+            EmitSignal(SignalName.PressedWithData, CustomData);
         }
     }
 }
