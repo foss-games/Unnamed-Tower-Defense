@@ -17,21 +17,28 @@ public partial class Enemy : CharacterBody2D
         set
         {
             _hp = value;
-            //text.Text = value.ToString();
-            if (_hp <= 0) Die();
+            EmitSignal(SignalName.HPChanged, value);
+            if (_hp <= 0) EmitSignal(SignalName.Killed);
         }
     }
+    [Signal]
+    public delegate void HPChangedEventHandler(int newHP);
+    [Signal]
+    public delegate void KilledEventHandler();
     public double Reward;
     public double Speed;
-    public Vector2 TargetPosition;
-    private float _movementDelta;
     Play play;
     private AStarHexGrid2D AStarHex;
     private Line2D pathLine;
-
-    public bool DrawPath = false;
-
     private Sprite2D sprite;
+
+    private EnemyStates state;
+
+    [Signal]
+    public delegate void StateChangedEventHandler();
+
+    [Signal]
+    public delegate void ReachedDestinationEventHandler();
 
     public override void _Ready()
     {
@@ -40,11 +47,19 @@ public partial class Enemy : CharacterBody2D
         AStarHex = play.AStarHex;
 
         pathLine = GetNode<Line2D>("path");
+
+        ReachedDestination += OnDestinationReached;
+        play.LevelLost += OnLevelLost;
+
+        state = EnemyStates.Normal;
+
+        Killed += OnKilled;
+        ReachedDestination += OnDestinationReached;
     }
 
     public void LoadStats(Guid guid)
     {
-        FOSSGames.Enemy stats = play.EnemyTypes.Find(e => e.GUID == guid);
+        FOSSGames.Enemy stats = Global.Instance.EnemyTypes.Find(e => e.GUID == guid);
 
         HP = stats.HP;
         Speed = stats.Speed;
@@ -60,55 +75,70 @@ public partial class Enemy : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        var from = play.map.LocalToMap(GlobalPosition);
-        var to = (Vector2I)play.GameDef.EndLocation;
-        Vector2[] path = AStarHex.GetPath(from, to);
-
-        if (path.Length < 1)
+        if (state == EnemyStates.Normal)
         {
+            Vector2I from = play.map.LocalToMap(GlobalPosition);
+            Vector2I to = (Vector2I)play.GameDef.EndLocation;
+
+            Vector2 destLocal = play.map.MapToLocal(to);
+            float tSize = play.map.TileSet.TileSize.X / 2;
+
+            if (destLocal.X - tSize <= Position.X &&
+                destLocal.X + tSize >= Position.X &&
+                destLocal.Y - tSize <= Position.Y &&
+                destLocal.Y + tSize >= Position.Y)
+            {
+                EmitSignal(SignalName.ReachedDestination);
+                return;
+            }
+
+            Vector2[] path = AStarHex.GetPath(from, to);
+
+            if (path.Length < 1)
+            {
+                return;
+            }
+
+            if (Global.Instance.Debug)
+            {
+                //show path, useful for debug
+                pathLine.ClearPoints();
+                foreach (Vector2 point in path)
+                {
+                    pathLine.AddPoint(pathLine.ToLocal(point));
+                }
+                pathLine.QueueRedraw();
+            }
+
+            Vector2 nextPosition = play.map.ToGlobal(path[1]);
+            Velocity = Position.DirectionTo(nextPosition) * (float)Speed;
+
+            MoveAndSlide();
             return;
         }
-
-        if (DrawPath)
+        if (state == EnemyStates.Celebrating)
         {
-            //show path, useful for debug
-            pathLine.ClearPoints();
-            foreach (Vector2 point in path)
-            {
-                pathLine.AddPoint(pathLine.ToLocal(point));
-            }
-            pathLine.QueueRedraw();
+            Rotation += 2 * (float)delta;
         }
-
-        Vector2 nextPosition = play.map.ToGlobal(path[1]);
-        Velocity = Position.DirectionTo(nextPosition) * (float)Speed;
-
-        MoveAndSlide();
     }
 
     public void OnDestinationReached()
     {
-        play.HP--;
         Visible = false; //play animation pls
         QueueFree();
     }
 
-    public void Die()
+    public void OnKilled()
     {
         Visible = false; //play death animation pls
-        play.Credits += Reward;
-
         GpuParticles2D particles = GD.Load<PackedScene>("res://Enemy/deathparticles.tscn").Instantiate<GpuParticles2D>();
         particles.GlobalPosition = GlobalPosition;
         GetParent().AddChild(particles);
-
-        //destroy object 
         QueueFree();
     }
 
-    public void CreateParticles()
+    public void OnLevelLost()
     {
-
+        state = EnemyStates.Celebrating;
     }
-
 }

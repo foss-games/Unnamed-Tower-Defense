@@ -13,7 +13,7 @@ offset_right = 587.0
 offset_bottom = 228.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 60
-text = "Choose a Level"
+text = "Tower Defense"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -27,6 +27,7 @@ size_flags_vertical = 4
 text = "Play"
 
 [node name="MapMakerButton" type="Button" parent="."]
+visible = false
 offset_left = 468.0
 offset_top = 955.0
 offset_right = 582.0

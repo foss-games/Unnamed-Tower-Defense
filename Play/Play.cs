@@ -19,11 +19,12 @@ public partial class Play : Node2D
         set
         {
             _currentWave = value;
-            hud.CurrentWave = value;
-            hud.SetTimer(GameDef.Waves[CurrentWave].Interval);
-            waveTimer.WaitTime = GameDef.Waves[CurrentWave].Interval;
+            EmitSignal(SignalName.WaveChanged, _currentWave);
         }
     }
+
+    [Signal]
+    public delegate void WaveChangedEventHandler(int waveID);
 
     public double _credits;
     public double Credits
@@ -51,18 +52,19 @@ public partial class Play : Node2D
         set
         {
             _hp = value;
-            hud.HP = value;
-            if (value == 0)
-            {
-                Array<Node> enemies = enemiesNode.GetChildren();
-                foreach (Enemy enemy in enemies)
-                {
-                    enemy.QueueFree();
-                }
-                GD.Print("Game Over");
-            }
+            EmitSignal(SignalName.HPChanged, value);
+            OnHPChanged(value);
         }
     }
+
+    [Signal]
+    public delegate void HPChangedEventHandler();
+    [Signal]
+    public delegate void LevelLostEventHandler();
+    [Signal]
+    public delegate void LevelWonEventHandler();
+    [Signal]
+    public delegate void LevelEndedEventHandler();
 
     private Timer waveTimer;
     private Timer spawnTimer;
@@ -75,15 +77,12 @@ public partial class Play : Node2D
     public TileMapLayer map;
 
     public AStarHexGrid2D AStarHex = new AStarHexGrid2D();
-    public List<FOSSGames.Enemy> EnemyTypes = new List<FOSSGames.Enemy>();
     public List<WaveEnemy> SpawnSchedule = [];
 
     public override void _Ready()
     {
         GD.Print("Play._Ready()");
-        //TempInitGD();
-        LoadEnemies();
-        GameDef = LoadLevel();
+        GameDef = Global.Instance.Levels[Global.Instance.SelectedLevelIndex];
 
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
         map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(2, 0));
@@ -113,7 +112,26 @@ public partial class Play : Node2D
         hud.MaxWaves = GameDef.Waves.Count;
         hud.CurrentWave = 0;
         hud.MaxHP = GameDef.MaxHP;
+
+        LevelLost += OnLevelLost;
+        LevelWon += OnLevelWon;
+        LevelEnded += OnLevelEnd;
+        WaveChanged += _ =>
+        {
+            waveTimer.WaitTime = GameDef.Waves[CurrentWave].Interval;
+        };
     }
+
+    public override void _Process(double delta)
+    {
+        if (SpawnSchedule.Count < 1 && //no pending spawns
+            GameDef.Waves.Count < 1 && //no pending waves
+            GetTree().GetNodesInGroup("enemies").Count < 1) //no spawned enemies
+        {
+            EmitSignal(SignalName.LevelWon);
+        }
+    }
+
 
     public void InitObstacles()
     {
@@ -196,44 +214,38 @@ public partial class Play : Node2D
         return schedule;
     }
 
-    public void LoadEnemies()
-    {
-        using DirAccess dir = DirAccess.Open("res://Resources/Enemies/");
-        if (dir == null) throw new Exception("Unable to load enemies.");
-
-        JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new Vector2Converter());
-        options.Converters.Add(new Vector2IConverter());
-        options.Converters.Add(new EnemyConverter());
-
-        foreach (string filename in dir.GetFiles())
-        {
-            if (!filename.EndsWith("json")) continue;
-            string json = FileAccess.Open("res://Resources/Enemies/" + filename, FileAccess.ModeFlags.Read).GetAsText();
-
-            EnemyTypes.Add(JsonSerializer.Deserialize<FOSSGames.Enemy>(json, options));
-        }
-        return;
-    }
-
-    public Level LoadLevel()
-    {
-        JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new Vector2Converter());
-        options.Converters.Add(new Vector2IConverter());
-        options.Converters.Add(new EnemyConverter());
-        using FileAccess file = FileAccess.Open("res://Resources/Levels/1.json", FileAccess.ModeFlags.Read);
-
-        return JsonSerializer.Deserialize<Level>(file.GetAsText(), options);
-    }
-
     public void SpawnEnemy(Guid guid)
     {
         Enemy enemy = enemyScene.Instantiate<Enemy>();
         enemy.GlobalPosition = map.MapToLocal((Vector2I)GameDef.StartLocation);
-        enemy.TargetPosition = map.MapToLocal((Vector2I)GameDef.EndLocation);
-        enemy.DrawPath = false;
+        enemy.ReachedDestination += () => HP--;
+        enemy.Killed += () => Credits += enemy.Reward;
         enemiesNode.AddChild(enemy);
         enemy.LoadStats(guid);
+    }
+
+    private void OnHPChanged(int value)
+    {
+        hud.HP = value;
+        if (value <= 0)
+        {
+            EmitSignal(SignalName.LevelLost);
+        }
+    }
+    private void OnLevelEnd()
+    {
+        SpawnSchedule.Clear();
+        waveTimer.Stop();
+        spawnTimer.Stop();
+    }
+    private void OnLevelLost()
+    {
+        EmitSignal(SignalName.LevelEnded);
+        GetNode<Node2D>("EndMenu").Visible = true;
+    }
+    private void OnLevelWon()
+    {
+        EmitSignal(SignalName.LevelEnded);
+        GetNode<Node2D>("EndMenu").Visible = true;
     }
 }

@@ -2,11 +2,11 @@
   "EndLocation": { "X": 12, "Y": 11 },
   "StartLocation": { "X": 10, "Y": 12 },
   "StartingCredits": 10,
-  "MaxHP": 10,
+  "MaxHP": 3,
   "AvailableTowers": [""],
   "Waves": [
     {
-      "Interval": 5,
+      "Interval": 1,
       "Enemies": [
         {
           "GUID": "de17349b-ac1e-4546-807c-71851f0b6416",
@@ -40,8 +40,8 @@
       "Enemies": [
         {
           "GUID": "bf17c3a4-a117-409f-b5bc-65152abe99d1",
-          "Count": 4,
-          "Interval": 0.33
+          "Count": 1,
+          "Interval": 0.53
         }
       ]
     },

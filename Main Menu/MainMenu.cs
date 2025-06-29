@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using FOSSGames;
 using Godot;
 
@@ -11,46 +8,26 @@ public partial class MainMenu : Node2D
     public override void _Ready()
     {
         gridContainer = GetNode<GridContainer>("GridContainer");
-
-        //load levels
-        List<Level> levels = LoadLevels();
         //create buttons and add to GridContainer
-
-        for (int i = 0; i < levels.Count; i++)
+        for (int i = 0; i < Global.Instance.Levels.Count; i++)
         {
             CustomDataButton button = new CustomDataButton();
             button.CustomData = i;
             button.PressedWithData += OnLevelSelection;
-            button.Text = $"Level {i}";
+            button.Text = $"Level {i + 1}";
             button.AddThemeFontSizeOverride("font_size", 30);
             gridContainer.AddChild(button);
         }
-    }
 
-    public List<Level> LoadLevels()
-    {
-        List<Level> levels = [];
-        using DirAccess dir = DirAccess.Open("res://Resources/Levels/");
-        if (dir == null) throw new Exception("Unable to load levels.");
-
-        JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new Vector2Converter());
-        options.Converters.Add(new Vector2IConverter());
-        options.Converters.Add(new EnemyConverter());
-
-        foreach (string filename in dir.GetFiles())
+        if (Global.Instance.Debug)
         {
-            if (!filename.EndsWith("json")) continue;
-            string json = FileAccess.Open("res://Resources/Levels/" + filename, FileAccess.ModeFlags.Read).GetAsText();
-
-            levels.Add(JsonSerializer.Deserialize<FOSSGames.Level>(json, options));
+            GetNode<Button>("MapMakerButton").Visible = true;
         }
-        return levels;
     }
 
     public void OnPlayButton()
     {
-        //GetTree().ChangeSceneToFile("res://Play/Play.tscn");
+        GetNode<Label>("Title").Text = levelSelectVisible ? "Tower Defense!" : "Choose Level!";
         GetNode<Button>("PlayButton").Visible = levelSelectVisible;
         GetNode<Button>("MapMakerButton").Visible = levelSelectVisible;
         GetNode<GridContainer>("GridContainer").Visible = !levelSelectVisible;
@@ -63,6 +40,7 @@ public partial class MainMenu : Node2D
     }
     public void OnLevelSelection(Variant level)
     {
-        GD.Print(level.AsInt32());
+        Global.Instance.SelectedLevelIndex = level.AsInt32();
+        GetTree().ChangeSceneToFile("res://Play/Play.tscn");
     }
 }

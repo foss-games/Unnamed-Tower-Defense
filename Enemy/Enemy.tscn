@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bvll65vxt8n7f"]
 
 [ext_resource type="Script" uid="uid://d2sgghf075mk8" path="res://Enemy/Enemy.cs" id="1_epr5s"]
-[ext_resource type="Texture2D" path="res://Resources/Enemies/SpriteSheet.png" id="2_vonkd"]
+[ext_resource type="Texture2D" uid="uid://c5omydq7ircr3" path="res://Resources/Enemies/SpriteSheet.png" id="2_vonkd"]
 [ext_resource type="PackedScene" uid="uid://dceah42k2makn" path="res://Enemy/deathparticles.tscn" id="3_vonkd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vi685"]
@@ -26,6 +26,7 @@ shape = SubResource("CircleShape2D_vi685")
 autostart = true
 
 [node name="Particles" parent="." instance=ExtResource("3_vonkd")]
+visible = false
 
 [node name="path" type="Line2D" parent="."]
 width = 3.0

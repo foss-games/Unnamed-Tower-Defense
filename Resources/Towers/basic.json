@@ -1,0 +1,10 @@
+{
+  "GUID": "",
+  "Type": 0,
+  "SpriteRow": 0,
+  "Animated": false,
+  "Damage": 1,
+  "ROF": 1,
+  "Range": 1,
+  "VisionRangeMult": 1
+}

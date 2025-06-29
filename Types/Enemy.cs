@@ -12,4 +12,9 @@ namespace FOSSGames
         public double Reward;
         public EnemyUpgrade Upgrade;
     }
+    public enum EnemyStates
+    {
+        Normal,
+        Celebrating,
+    }
 }

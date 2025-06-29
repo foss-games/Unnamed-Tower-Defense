@@ -1,3 +1,4 @@
+using FOSSGames;
 using Godot;
 
 public partial class Hud : Node2D
@@ -62,6 +63,8 @@ public partial class Hud : Node2D
 
     private Timer timer;
 
+    private Play play;
+
     public override void _Ready()
     {
         TimerText = GetNode<Label>("TimerText");
@@ -69,6 +72,9 @@ public partial class Hud : Node2D
         CreditText = GetNode<Label>("CreditText");
         HPText = GetNode<Label>("HPText");
         timer = GetNode<Timer>("HudTimer");
+        play = (Play)GetTree().GetFirstNodeInGroup("play");
+        play.LevelEnded += () => timer.Stop();
+        play.WaveChanged += OnWaveChange;
     }
 
     public void SetWaves()
@@ -116,5 +122,10 @@ public partial class Hud : Node2D
 
         _seconds--;
         UpdateTimerText();
+    }
+    public void OnWaveChange(int waveID)
+    {
+        CurrentWave = waveID;
+        timer.WaitTime = play.GameDef.Waves[waveID].Interval;
     }
 }

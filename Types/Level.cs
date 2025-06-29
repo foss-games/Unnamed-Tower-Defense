@@ -21,6 +21,7 @@ namespace FOSSGames
         public List<Wave> Waves;
         [JsonInclude]
         public string[] AvailableTowers;
+        public string Filename;
     }
 
     public class Wave
