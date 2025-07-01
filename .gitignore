@@ -18,3 +18,5 @@ mono_crash.*.json
 
 *.apk
 *.apk.idsig
+
+build/
