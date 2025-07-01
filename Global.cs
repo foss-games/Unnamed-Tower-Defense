@@ -25,6 +25,7 @@ namespace FOSSGames
             LoadEnemies();
             LoadLevels();
         }
+
         public void LoadEnemies()
         {
             using DirAccess dir = DirAccess.Open("res://Resources/Enemies/");
@@ -34,6 +35,7 @@ namespace FOSSGames
             options.Converters.Add(new Vector2Converter());
             options.Converters.Add(new Vector2IConverter());
             options.Converters.Add(new EnemyConverter());
+            options.TypeInfoResolver = SourceGenerationContext.Default;
 
             foreach (string filename in dir.GetFiles())
             {
@@ -43,6 +45,7 @@ namespace FOSSGames
                 EnemyTypes.Add(JsonSerializer.Deserialize<FOSSGames.Enemy>(json, options));
             }
         }
+
         public void LoadLevels()
         {
             using DirAccess dir = DirAccess.Open("res://Resources/Levels/");
@@ -52,6 +55,8 @@ namespace FOSSGames
             options.Converters.Add(new Vector2Converter());
             options.Converters.Add(new Vector2IConverter());
             options.Converters.Add(new EnemyConverter());
+            options.TypeInfoResolver = SourceGenerationContext.Default;
+
 
             foreach (string filename in dir.GetFiles())
             {

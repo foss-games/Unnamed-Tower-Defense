@@ -50,4 +50,10 @@ namespace FOSSGames
         Running,
         Complete
     }
+    [JsonSourceGenerationOptions(WriteIndented = true)]
+    [JsonSerializable(typeof(Level))]
+    [JsonSerializable(typeof(WaveEnemy))]
+    [JsonSerializable(typeof(Wave))]
+    [JsonSerializable(typeof(Enemy))]
+    internal partial class SourceGenerationContext : JsonSerializerContext { }
 }
