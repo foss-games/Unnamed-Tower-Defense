@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Godot;
+using Godot.Collections;
 
 namespace FOSSGames
 {
@@ -13,18 +13,7 @@ namespace FOSSGames
         public bool Debug = true;
         public List<Enemy> EnemyTypes = [];
         public List<Level> Levels = [];
-
-        //Global's singleton setup
-        private static Global _instance;
-        public static Global Instance => _instance;
-        public override void _EnterTree()
-        {
-            if (_instance != null) QueueFree();
-            _instance = this;
-
-            LoadEnemies();
-            LoadLevels();
-        }
+        public Array<string> CompletedLevels = new Array<string>();
 
         public void LoadEnemies()
         {
@@ -44,6 +33,7 @@ namespace FOSSGames
 
                 EnemyTypes.Add(JsonSerializer.Deserialize<FOSSGames.Enemy>(json, options));
             }
+
         }
 
         public void LoadLevels()
@@ -67,5 +57,48 @@ namespace FOSSGames
                 Levels.Add(level);
             }
         }
+
+        public static void SaveGame()
+        {
+            using FileAccess saveFile = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Write);
+
+            var data = new Godot.Collections.Dictionary<string, Variant>
+            {
+                { "CompletedLevels", Instance.CompletedLevels }
+            };
+
+            saveFile.StoreLine(Json.Stringify(data));
+        }
+
+        public static void LoadSaveGame()
+        {
+            if (!FileAccess.FileExists("user://savegame.save"))
+            {
+                //No save to load
+                return;
+            }
+            using FileAccess saveFile = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Read);
+            var line = saveFile.GetLine();
+            Godot.Collections.Dictionary<string, Variant> parsed = (Godot.Collections.Dictionary<string, Variant>)Json.ParseString(line);
+
+            Instance.CompletedLevels = (Array<string>)parsed["CompletedLevels"];
+
+            return;
+
+        }
+
+        //Global's singleton setup
+        private static Global _instance;
+        public static Global Instance => _instance;
+        public override void _EnterTree()
+        {
+            if (_instance != null) QueueFree();
+            _instance = this;
+
+            LoadEnemies();
+            LoadLevels();
+            LoadSaveGame();
+        }
+
     }
 }

@@ -253,5 +253,7 @@ public partial class Play : Node2D
     {
         EmitSignal(SignalName.LevelEnded);
         GetNode<Node2D>("EndMenu").Visible = true;
+        Global.Instance.CompletedLevels.Add(GameDef.GUID.ToString());
+        Global.SaveGame();
     }
 }
