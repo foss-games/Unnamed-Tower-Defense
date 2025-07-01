@@ -32,11 +32,18 @@ public partial class Enemy : CharacterBody2D
     private Line2D pathLine;
     private Sprite2D sprite;
 
-    private EnemyStates state;
-
+    private EnemyStates _state;
+    public EnemyStates state
+    {
+        get { return _state; }
+        set
+        {
+            _state = value;
+            EmitSignal(SignalName.StateChanged);
+        }
+    }
     [Signal]
     public delegate void StateChangedEventHandler();
-
     [Signal]
     public delegate void ReachedDestinationEventHandler();
 
