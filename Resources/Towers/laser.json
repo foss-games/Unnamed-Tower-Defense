@@ -1,34 +1,34 @@
 {
-  "GUID": "da15da79-28cc-4b60-a768-91d7bb3fb475",
+  "GUID": "a6a04a4b-43c9-4dc0-94bf-1de22dc3e041",
   "Sprite": {
-    "Frame": 0,
+    "Frame": 2,
     "Scale": { "X": 1.0, "Y": 1.0 },
     "Modulate": {
-      "R8": 0,
-      "G8": 255,
-      "B8": 0,
+      "R8": 64,
+      "G8": 64,
+      "B8": 255,
       "A8": 255
     }
   },
   "HP": 1,
-  "VisionRange": 5,
-  "Cost": 5.0,
+  "VisionRange": 9999,
+  "Cost": 10.0,
   "Markers": [{ "X": 8, "Y": 0 }],
   "Attacks": [
     {
-      "Damage": 2,
-      "Range": 3,
-      "ROF": 0.5,
-      "Type": 0,
+      "Damage": 1.5,
+      "Range": 9999,
+      "ROF": 0.75,
+      "Type": 2,
       "AttackDetails": {
         "Sprite": {
-          "Frame": 1,
+          "Frame": 0,
           "Scale": { "X": 1.0, "Y": 1.0 },
           "Modulate": {
             "R8": 0,
-            "G8": 255,
-            "B8": 0,
-            "A8": 255
+            "G8": 0,
+            "B8": 255,
+            "A8": 128
           }
         },
         "TravelSpeed": 1

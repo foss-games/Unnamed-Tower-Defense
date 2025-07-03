@@ -13,6 +13,7 @@ namespace FOSSGames
         public bool Debug = true;
         public List<Enemy> EnemyTypes = [];
         public List<Level> Levels = [];
+        public List<Tower> Towers = [];
         public Array<string> CompletedLevels = new Array<string>();
 
         public void LoadEnemies()
@@ -58,6 +59,28 @@ namespace FOSSGames
             }
         }
 
+        public void LoadTowers()
+        {
+            using DirAccess dir = DirAccess.Open("res://Resources/Towers/");
+            if (dir == null) throw new Exception("Unable to load towers.");
+
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.Converters.Add(new Vector2Converter());
+            options.Converters.Add(new Vector2IConverter());
+            options.Converters.Add(new EnemyConverter());
+            options.TypeInfoResolver = SourceGenerationContext.Default;
+
+
+            foreach (string filename in dir.GetFiles())
+            {
+                if (!filename.EndsWith("json")) continue;
+                string json = FileAccess.Open($"res://Resources/Towers/{filename}", FileAccess.ModeFlags.Read).GetAsText();
+                Tower tower = JsonSerializer.Deserialize<Tower>(json, options);
+                tower.Filename = filename;
+                Towers.Add(tower);
+            }
+        }
+
         public static void SaveGame()
         {
             using FileAccess saveFile = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Write);
@@ -97,6 +120,7 @@ namespace FOSSGames
 
             LoadEnemies();
             LoadLevels();
+            LoadTowers();
             LoadSaveGame();
         }
 

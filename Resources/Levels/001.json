@@ -4,10 +4,7 @@
   "StartLocation": { "X": 2, "Y": 12 },
   "StartingCredits": 10,
   "MaxHP": 10,
-  "AvailableTowers": [
-    "da15da79-28cc-4b60-a768-91d7bb3fb475",
-    "a6a04a4b-43c9-4dc0-94bf-1de22dc3e041"
-  ],
+  "AvailableTowers": ["da15da79-28cc-4b60-a768-91d7bb3fb475"],
   "Waves": [
     {
       "Interval": 5,

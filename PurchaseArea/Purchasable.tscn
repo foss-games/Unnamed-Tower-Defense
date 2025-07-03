@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://di42w7jdrnfdn"]
+
+[ext_resource type="Texture2D" uid="uid://bfciln3m8l74t" path="res://Resources/Towers/TowerTileSet.png" id="1_4geh6"]
+[ext_resource type="Script" uid="uid://rcv2roxt2wkk" path="res://PurchaseArea/Purchasable.cs" id="1_itijr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3mnpl"]
+atlas = ExtResource("1_4geh6")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_itijr"]
+atlas = ExtResource("1_4geh6")
+region = Rect2(32, 64, 32, 32)
+
+[node name="Purchasable" type="Control"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 50.0
+script = ExtResource("1_itijr")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 75.0
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="Node2D" type="Node2D" parent="Button"]
+position = Vector2(24, 19)
+
+[node name="Body" type="Sprite2D" parent="Button/Node2D"]
+texture = SubResource("AtlasTexture_3mnpl")
+
+[node name="Turret" type="Sprite2D" parent="Button/Node2D"]
+texture = SubResource("AtlasTexture_itijr")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 15.0
+offset_top = 40.0
+offset_right = 35.0
+offset_bottom = 63.0
+text = "5"
+horizontal_alignment = 1

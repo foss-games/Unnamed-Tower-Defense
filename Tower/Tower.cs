@@ -1,70 +1,90 @@
 using System.Linq;
+using FOSSGames;
 using Godot;
 
 public partial class Tower : Node2D
 {
     public double RateOfFire;
-    public int Damage;
-    public int TargetingRange;
-    public int VisionRange;
-    public int Cost;
+    public double Damage;
+    public double TargetingRange;
+    public double VisionRange;
+    public double Cost;
 
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
     public Timer ShotTimer;
 
     private Node2D projectilesNode;
 
-    private TileMapLayer map;
-    private TileMapLayer towermask;
     private AStarHexGrid2D AStarHex;
-    public bool AIEnabled = true;
-
-    public bool IsHeld = false;
 
     public Sprite2D circle;
 
     private Play play;
+    public FOSSGames.Tower TowerType;
 
-    private NavigationAgent2D NavAgent;
+    private Vector2I offset = new Vector2I(0, -60);
 
-    public Vector2 Offset;
+    public TowerState State = TowerState.Disabled;
+    [Signal]
+    public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
 
     public override void _Ready()
     {
-        RateOfFire = 0.5;
-        Damage = 2;
-        VisionRange = 5;
-        TargetingRange = 3;
-        Cost = 5;
-
-
         play = (Play)GetTree().GetFirstNodeInGroup("play");
 
         AStarHex = play.AStarHex;
 
         projectilesNode = (Node2D)GetTree().GetFirstNodeInGroup("projectiles");
-        ShotTimer = GetNode<Godot.Timer>("ShotTimer");
+        ShotTimer = GetNode<Timer>("ShotTimer");
         circle = GetNode<Sprite2D>("Circle");
+
+        VisionRange = TowerType.VisionRange;
+        RateOfFire = TowerType.Attacks[0].ROF;
+        Damage = TowerType.Attacks[0].Damage;
+        TargetingRange = TowerType.Attacks[0].Range;
+
 
         ShotTimer.WaitTime = RateOfFire;
 
-        circle.Scale *= TargetingRange;
+        circle.Scale *= (float)TargetingRange;
 
-        map = GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer");
-        towermask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
+        TowerStateChanged += OnStateChange;
+
+        Sprite2D turret = GetNode<Sprite2D>("Turret");
+        Sprite2D body = GetNode<Sprite2D>("Body");
+
+        circle.Visible = true;
+
+
+        // body.Texture = new AtlasTexture
+        // {
+        //     Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
+        //     Region = new Rect2(0, TowerType.Sprite.Frame * 32, 32, 32)
+        // };
+
+        // turret.Texture = new AtlasTexture
+        // {
+        //     Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
+        //     Region = new Rect2(32, TowerType.Sprite.Frame * 32, 32, 32)
+        // };
+
+        // Visible = true;
+        //State = TowerState.Enabled;
+
+        QueueRedraw();
     }
 
     public bool PlacementWillBlockPath(Vector2I destination)
     {
-        using AStarHexGrid2D astar = new AStarHexGrid2D();
+        AStarHexGrid2D astar = new AStarHexGrid2D();
         astar.SetupHexGrid(play.map);
 
-        int cellID = astar.CoordsToID(play.map.LocalToMap(destination));
+        int cellID = astar.CoordsToID(destination);
         foreach (long connId in astar.GetPointConnections(cellID))
         {
-            astar.DisconnectPoints(cellID, connId, true);
+            astar.DisconnectPoints(cellID, connId, false);
         }
-        astar.RemovePoint(cellID);
+        astar.RemoveHexPoint(destination);
 
         Vector2[] path = astar.GetPath((Vector2I)play.GameDef.StartLocation, (Vector2I)play.GameDef.EndLocation);
 
@@ -73,7 +93,7 @@ public partial class Tower : Node2D
 
     private void RemovePointFromNavigation(Vector2I destination)
     {
-        int cellID = play.AStarHex.CoordsToID(play.map.LocalToMap(destination));
+        int cellID = play.AStarHex.CoordsToID(destination);
         foreach (long connId in play.AStarHex.GetPointConnections(cellID))
         {
             play.AStarHex.DisconnectPoints(cellID, connId, true);
@@ -81,36 +101,19 @@ public partial class Tower : Node2D
         play.AStarHex.RemovePoint(cellID);
     }
 
-    public void Move(Vector2I destination)
-    {
-        if (destination.X == 0 || destination.Y == 0) return;
-        if (towermask.GetCellTileData(towermask.LocalToMap(destination)) != null)
-        {
-            return;
-        }
-        if (PlacementWillBlockPath(destination)) return;
-
-        //map.SetCell(map.LocalToMap(destination), 0, new Vector2I(1, 0));
-        //towermask.SetCell(towermask.LocalToMap(destination), 0, new Vector2I(1, 0));
-        RemovePointFromNavigation(destination);
-
-        GlobalPosition = destination;
-
-        ((Play)GetTree().GetFirstNodeInGroup("play")).Credits -= Cost;
-    }
-
     public void Destroy()
     {
-        map.SetCell(map.LocalToMap(Position), 0, new Vector2I(0, 0));
+        play.map.SetCell(play.map.LocalToMap(Position), 0, new Vector2I(0, 0));
+        //remove placed data from map
         QueueFree();
     }
     public void OnShotTimerTimeout()
     {
-        if (!AIEnabled) return;
+        if (State != TowerState.Enabled) return;
         var enemies = GetTree().GetNodesInGroup("enemies");
         var targetableEnemies = from Enemy enemy in enemies
-                                let d = enemy.GlobalPosition.DistanceSquaredTo(GlobalPosition)
-                                where d <= TargetingRange * 1234 * 2 //FIX ME--------------
+                                let d = enemy.GlobalPosition.DistanceTo(GlobalPosition)
+                                where d <= TargetingRange * 32 //FIX ME--------------
                                 orderby d
                                 select enemy;
 
@@ -125,14 +128,66 @@ public partial class Tower : Node2D
     }
     public override void _PhysicsProcess(double delta)
     {
-        if (!AIEnabled) return;
+        switch (State)
+        {
+            case TowerState.Disabled:
+                break;
+            case TowerState.Enabled:
+                LookAtEnemy();
+                break;
+            case TowerState.Dragging:
+                if (Input.IsActionPressed("Click"))
+                    Drag();
+                else
+                    PlaceTower(GetGlobalMousePosition() + offset);
+                break;
+            case TowerState.Upgrading:
+                break;
+        }
 
+    }
+    private void OnStateChange(TowerState oldState, TowerState newState)
+    {
+        if (oldState == TowerState.Dragging)
+        {
+            //handle dropped
+            PlaceTower(GetGlobalMousePosition());
+        }
+    }
+    public void PlaceTower(Vector2 destination) => PlaceTower(play.map.LocalToMap(destination));
+    public void PlaceTower(Vector2I destination)
+    {
+        TileData tileData = play.map.GetCellTileData(destination);
+
+        if (tileData == null ||
+            (bool)tileData.GetCustomData("solid") ||
+            (bool)tileData.GetCustomData("startpos") ||
+            (bool)tileData.GetCustomData("endpos"))
+        {
+            QueueFree();
+        }
+        if (PlacementWillBlockPath(destination)) QueueFree();
+
+        circle.Visible = false;
+
+        RemovePointFromNavigation(destination);
+
+        GlobalPosition = play.map.MapToLocal(destination);
+
+        play.map.SetCell(destination, 0, new Vector2I(1, 0));
+
+        play.Credits -= Cost;
+
+        State = TowerState.Enabled;
+    }
+    private void LookAtEnemy()
+    {
         var enemies = GetTree().GetNodesInGroup("enemies");
         if (enemies.Count > 0)
         {
             var visibleEnemies = from Enemy enemy in enemies
-                                 let d = enemy.GlobalPosition.DistanceSquaredTo(GlobalPosition)
-                                 where d <= VisionRange * 1234 * 2 //FIX ME--------------
+                                 let d = enemy.GlobalPosition.DistanceTo(GlobalPosition)
+                                 where d <= VisionRange * 32
                                  orderby d
                                  select enemy;
 
@@ -142,4 +197,17 @@ public partial class Tower : Node2D
             LookAt(target.GlobalPosition);
         }
     }
+    private void Drag()
+    {
+        GlobalPosition = GetGlobalMousePosition() + offset;
+        QueueRedraw();
+    }
+}
+
+public enum TowerState
+{
+    Enabled,
+    Disabled,
+    Dragging,
+    Upgrading
 }

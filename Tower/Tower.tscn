@@ -29,4 +29,6 @@ visible = false
 modulate = Color(1, 1, 1, 0.105882)
 texture = ExtResource("3_pxrlm")
 
+[node name="Markers" type="Node2D" parent="."]
+
 [connection signal="timeout" from="ShotTimer" to="." method="OnShotTimerTimeout"]
