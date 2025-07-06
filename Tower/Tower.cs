@@ -183,8 +183,6 @@ public partial class Tower : Node2D
         timer.Timeout += () => { beam.Visible = false; };
         AddChild(timer);
         timer.Start();
-
-
     }
     public override void _PhysicsProcess(double delta)
     {
