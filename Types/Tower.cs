@@ -76,6 +76,8 @@ namespace FOSSGames
         [JsonInclude]
         public Guid GUID;
         [JsonInclude]
+        public int Sort;
+        [JsonInclude]
         public Sprite Sprite;
         [JsonInclude]
         public double HP;

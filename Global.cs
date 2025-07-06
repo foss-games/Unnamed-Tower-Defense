@@ -70,7 +70,6 @@ namespace FOSSGames
             options.Converters.Add(new EnemyConverter());
             options.TypeInfoResolver = SourceGenerationContext.Default;
 
-
             foreach (string filename in dir.GetFiles())
             {
                 if (!filename.EndsWith("json")) continue;
@@ -79,6 +78,8 @@ namespace FOSSGames
                 tower.Filename = filename;
                 Towers.Add(tower);
             }
+
+            Towers.Sort((a, b) => a.Sort > b.Sort ? 1 : -1);
         }
 
         public static void SaveGame()

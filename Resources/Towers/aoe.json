@@ -1,26 +1,26 @@
 {
-  "GUID": "a6a04a4b-43c9-4dc0-94bf-1de22dc3e041",
-  "Sort": 1,
+  "GUID": "92d92686-0031-4ba7-bc37-a90f7719fa58",
+  "Sort": 2,
   "Sprite": {
-    "Frame": 2,
+    "Frame": 6,
     "Scale": { "X": 1.0, "Y": 1.0 },
     "Modulate": {
-      "R8": 64,
-      "G8": 64,
-      "B8": 255,
+      "R8": 50,
+      "G8": 168,
+      "B8": 139,
       "A8": 255
     }
   },
   "HP": 1,
   "VisionRange": 9999,
-  "Cost": 10.0,
+  "Cost": 20.0,
   "Markers": [{ "X": 8, "Y": 0 }],
   "Attacks": [
     {
-      "Damage": 1.5,
-      "Range": 9999,
+      "Damage": 2,
+      "Range": 2,
       "ROF": 0.75,
-      "Type": 2,
+      "Type": 3,
       "AttackDetails": {
         "Sprite": {
           "Frame": 0,
