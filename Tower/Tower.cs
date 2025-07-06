@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Godot.Collections;
 
 public partial class Tower : Node2D
 {
@@ -16,7 +18,10 @@ public partial class Tower : Node2D
 
     private AStarHexGrid2D AStarHex;
 
-    public Sprite2D circle;
+    private Sprite2D body;
+    private Sprite2D turret;
+    private Sprite2D circle;
+    private Line2D beam;
 
     private Play play;
     public FOSSGames.Tower TowerType;
@@ -27,6 +32,7 @@ public partial class Tower : Node2D
     [Signal]
     public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
     private Vector2 tileMapLayerOffset;
+
     public override void _Ready()
     {
         play = (Play)GetTree().GetFirstNodeInGroup("play");
@@ -36,6 +42,9 @@ public partial class Tower : Node2D
         projectilesNode = (Node2D)GetTree().GetFirstNodeInGroup("projectiles");
         ShotTimer = GetNode<Timer>("ShotTimer");
         circle = GetNode<Sprite2D>("Circle");
+        body = GetNode<Sprite2D>("Body");
+        turret = GetNode<Sprite2D>("Turret");
+        beam = turret.GetNode<Line2D>("Beam");
 
         VisionRange = TowerType.VisionRange;
         RateOfFire = TowerType.Attacks[0].ROF;
@@ -55,15 +64,11 @@ public partial class Tower : Node2D
 
         Modulate = TowerType.Sprite.Modulate;
 
-        Sprite2D body = GetNode<Sprite2D>("Body");
-        Sprite2D turret = GetNode<Sprite2D>("Turret");
-
         body.Texture = (AtlasTexture)body.Texture.Duplicate();
         turret.Texture = (AtlasTexture)turret.Texture.Duplicate();
         (body.Texture as AtlasTexture).Region = new Rect2(0, TowerType.Sprite.Frame * 32, 0, 0);
         (turret.Texture as AtlasTexture).Region = new Rect2(32, TowerType.Sprite.Frame * 32, 0, 0);
     }
-
     public bool PlacementWillBlockPath(Vector2I destination)
     {
         AStarHexGrid2D astar = new AStarHexGrid2D();
@@ -80,7 +85,6 @@ public partial class Tower : Node2D
 
         return fullPath.Length < 1;
     }
-
     private void RemovePointFromNavigation(Vector2I destination)
     {
         int cellID = play.AStarHex.CoordsToID(destination);
@@ -90,31 +94,99 @@ public partial class Tower : Node2D
         }
         play.AStarHex.RemovePoint(cellID);
     }
-
-    public void Destroy()
-    {
-        play.map.SetCell(play.map.LocalToMap(Position), 0, new Vector2I(0, 0));
-        //remove placed data from map
-        QueueFree();
-    }
     public void OnShotTimerTimeout()
     {
         if (State != TowerState.Enabled) return;
-        var enemies = GetTree().GetNodesInGroup("enemies");
-        var targetableEnemies = from Enemy enemy in enemies
-                                let d = enemy.GlobalPosition.DistanceTo(GlobalPosition)
-                                where d <= TargetingRange * 32 //FIX ME--------------
-                                orderby d
-                                select enemy;
+
+        var targetableEnemies = GetEnemies();
 
         if (!targetableEnemies.Any()) return;
         Enemy target = targetableEnemies.First();
 
+        switch (TowerType.Attacks[0].Type)
+        {
+            case FOSSGames.AttackTypes.Projectile:
+                DoProjectileShot(target);
+                break;
+            case FOSSGames.AttackTypes.Beam:
+                DoBeamShot(target);
+                break;
+            case FOSSGames.AttackTypes.Missile:
+                break;
+            case FOSSGames.AttackTypes.AOE:
+                DoAOEShot();
+                break;
+        }
+    }
+    private IEnumerable<Enemy> GetEnemies()
+    {
+        var enemies = GetTree().GetNodesInGroup("enemies");
+        return from Enemy enemy in enemies
+               let d = enemy.GlobalPosition.DistanceTo(GlobalPosition)
+               where d <= TargetingRange * 32 //FIX ME--------------
+               orderby d
+               select enemy;
+    }
+    private void DoProjectileShot(Enemy target)
+    {
         Projectile p = projectileScene.Instantiate<Projectile>();
-        //p.GlobalPosition = GlobalPosition;
+        Sprite2D projSprite = p.GetNode<Sprite2D>("Sprite2D");
+        projSprite.Frame = (TowerType.Sprite.Frame + 1) * 7;
+        projSprite.Modulate = TowerType.Sprite.Modulate;
         projectilesNode.AddChild(p);
         p.Damage = Damage;
         p.Start(this, target);
+    }
+    private void DoAOEShot()
+    {
+        IEnumerable<Enemy> enemies = GetEnemies();
+        if (!enemies.Any()) return;
+        foreach (Enemy enemy in GetEnemies()) enemy.HP -= Damage;
+        Sprite2D wave = (Sprite2D)body.Duplicate();
+        AddChild(wave);
+
+        Tween tween = GetTree().CreateTween();
+        tween.TweenProperty(wave, "modulate", new Color(Modulate.R, Modulate.G, Modulate.B, 0.5f), 0.75f);
+        tween.Parallel().TweenProperty(wave, "scale", new Vector2((float)(TargetingRange * 1.5), (float)(TargetingRange * 1.5)), 0.75f);
+        tween.TweenCallback(Callable.From(wave.QueueFree));
+    }
+    private void DoBeamShot(Enemy target)
+    {
+
+        //todo convert to shapecast2d
+        beam.Modulate = Modulate;
+        beam.Visible = true;
+
+        PhysicsDirectSpaceState2D spaceState = GetWorld2D().DirectSpaceState;
+        Array<Rid> hitEnemies = [];
+
+        for (int i = 0; i < GetTree().GetNodeCountInGroup("enemies"); i++)
+        {
+            var query = PhysicsRayQueryParameters2D.Create(GlobalPosition, target.GlobalPosition);
+            query.Exclude = hitEnemies;
+            var result = spaceState.IntersectRay(query);
+            if (result.Count < 1) continue;
+
+            Enemy hit = (Enemy)result["collider"];
+
+            hitEnemies.Add(hit.GetRid());
+
+            hit.HP -= Damage;
+        }
+
+        Timer timer = new Timer();
+        timer.WaitTime = 0.15;
+        timer.Timeout += HideBeam;
+        timer.Autostart = false;
+        timer.OneShot = true;
+        AddChild(timer);
+        timer.Start();
+
+
+    }
+    private void HideBeam()
+    {
+        beam.Visible = false;
     }
     public override void _PhysicsProcess(double delta)
     {
@@ -157,7 +229,8 @@ public partial class Tower : Node2D
             QueueFree();
             return;
         }
-        if (PlacementWillBlockPath(destination))
+        if (PlacementWillBlockPath(destination) ||
+            play.Credits < Cost)
         {
             QueueFree();
             return;
@@ -189,13 +262,18 @@ public partial class Tower : Node2D
             if (!visibleEnemies.Any()) return;
 
             Enemy target = visibleEnemies.First();
-            LookAt(target.GlobalPosition);
+            turret.LookAt(target.GlobalPosition);
         }
     }
     private void Drag()
     {
         GlobalPosition = GetGlobalMousePosition() + offset;
         QueueRedraw();
+    }
+    public void Destroy()
+    {
+        play.map.SetCell(play.map.LocalToMap(Position), 0, new Vector2I(0, 0));
+        QueueFree();
     }
 }
 

@@ -30,6 +30,11 @@ hframes = 7
 vframes = 8
 frame = 1
 
+[node name="Beam" type="Line2D" parent="Turret"]
+visible = false
+points = PackedVector2Array(0, 0, 2600, 0)
+width = 3.0
+
 [node name="Circle" type="Sprite2D" parent="."]
 visible = false
 modulate = Color(1, 1, 1, 0.172549)
