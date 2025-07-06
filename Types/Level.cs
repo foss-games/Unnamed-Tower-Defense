@@ -8,6 +8,8 @@ namespace FOSSGames
     public class Level
     {
         [JsonInclude]
+        public Guid GUID;
+        [JsonInclude]
         public Vector2 StartLocation;
         [JsonInclude]
         public Vector2 EndLocation;
@@ -55,5 +57,13 @@ namespace FOSSGames
     [JsonSerializable(typeof(WaveEnemy))]
     [JsonSerializable(typeof(Wave))]
     [JsonSerializable(typeof(Enemy))]
+    [JsonSerializable(typeof(Tower))]
+    [JsonSerializable(typeof(UpgradeEffectEffects))]
+    [JsonSerializable(typeof(UpgradeEffect))]
+    [JsonSerializable(typeof(Upgrade))]
+    [JsonSerializable(typeof(AttackTypes))]
+    [JsonSerializable(typeof(AttackDetails))]
+    [JsonSerializable(typeof(Attack))]
+    [JsonSerializable(typeof(Sprite))]
     internal partial class SourceGenerationContext : JsonSerializerContext { }
 }
