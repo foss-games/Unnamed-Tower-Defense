@@ -21,6 +21,7 @@ custom_minimum_size = Vector2(50, 75)
 layout_mode = 0
 offset_right = 50.0
 offset_bottom = 75.0
+focus_mode = 0
 flat = true
 icon_alignment = 1
 vertical_icon_alignment = 0
@@ -40,6 +41,7 @@ vframes = 8
 frame = 1
 
 [node name="Label" type="Label" parent="."]
+layout_mode = 0
 offset_left = 15.0
 offset_top = 40.0
 offset_right = 35.0
