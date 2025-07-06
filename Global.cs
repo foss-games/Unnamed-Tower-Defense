@@ -16,6 +16,7 @@ namespace FOSSGames
         public List<Tower> Towers = [];
         public Array<string> CompletedLevels = new Array<string>();
 
+        //Load resources
         public void LoadEnemies()
         {
             using DirAccess dir = DirAccess.Open("res://Resources/Enemies/");
