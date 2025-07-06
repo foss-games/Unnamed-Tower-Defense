@@ -5,11 +5,9 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3mnpl"]
 atlas = ExtResource("1_4geh6")
-region = Rect2(0, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_itijr"]
 atlas = ExtResource("1_4geh6")
-region = Rect2(32, 64, 32, 32)
 
 [node name="Purchasable" type="Control"]
 custom_minimum_size = Vector2(50, 0)
@@ -32,9 +30,14 @@ position = Vector2(24, 19)
 
 [node name="Body" type="Sprite2D" parent="Button/Node2D"]
 texture = SubResource("AtlasTexture_3mnpl")
+hframes = 7
+vframes = 8
 
 [node name="Turret" type="Sprite2D" parent="Button/Node2D"]
 texture = SubResource("AtlasTexture_itijr")
+hframes = 7
+vframes = 8
+frame = 1
 
 [node name="Label" type="Label" parent="."]
 offset_left = 15.0

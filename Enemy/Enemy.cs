@@ -47,6 +47,9 @@ public partial class Enemy : CharacterBody2D
     [Signal]
     public delegate void ReachedDestinationEventHandler();
 
+
+    private Vector2 tileMapLayerOffset;
+
     public override void _Ready()
     {
         play = (Play)GetTree().GetFirstNodeInGroup("play");
@@ -58,10 +61,11 @@ public partial class Enemy : CharacterBody2D
         ReachedDestination += OnDestinationReached;
         play.LevelLost += OnLevelLost;
 
-        state = EnemyStates.Normal;
+        state = EnemyStates.Enabled;
 
         Killed += OnKilled;
         ReachedDestination += OnDestinationReached;
+        tileMapLayerOffset = GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer").Position;
     }
 
     public void LoadStats(Guid guid)
@@ -82,7 +86,7 @@ public partial class Enemy : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (state == EnemyStates.Normal)
+        if (state == EnemyStates.Enabled)
         {
             Vector2I from = play.map.LocalToMap(GlobalPosition);
             Vector2I to = (Vector2I)play.GameDef.EndLocation;
@@ -112,7 +116,7 @@ public partial class Enemy : CharacterBody2D
                 pathLine.ClearPoints();
                 foreach (Vector2 point in path)
                 {
-                    pathLine.AddPoint(pathLine.ToLocal(point));
+                    pathLine.AddPoint(pathLine.ToLocal(point) + tileMapLayerOffset);
                 }
                 pathLine.QueueRedraw();
             }

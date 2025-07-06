@@ -24,13 +24,13 @@ public partial class Purchasable : Control
         body.Texture = new AtlasTexture
         {
             Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
-            Region = new Rect2(0, Tower.Sprite.Frame * 32, 32, 32)
+            Region = new Rect2(0, Tower.Sprite.Frame * 32, 0, 0)
         };
 
         turret.Texture = new AtlasTexture
         {
             Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
-            Region = new Rect2(32, Tower.Sprite.Frame * 32, 32, 32)
+            Region = new Rect2(32, Tower.Sprite.Frame * 32, 0, 0)
         };
 
         container.Modulate = Tower.Sprite.Modulate;
@@ -43,7 +43,6 @@ public partial class Purchasable : Control
         newTower.State = TowerState.Dragging;
         newTower.GlobalPosition = GetGlobalMousePosition();
         newTower.TowerType = Tower;
-        //newTower.CallDeferred("Init", Tower.GUID.ToString());
         play.GetNode<Node2D>("Towers").AddChild(newTower);
     }
 }

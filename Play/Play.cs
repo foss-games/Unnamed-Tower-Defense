@@ -89,8 +89,8 @@ public partial class Play : Node2D
         GameDef = Global.Instance.Levels[Global.Instance.SelectedLevelIndex];
 
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
-        map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(2, 0));
-        map.SetCell((Vector2I)GameDef.EndLocation, 0, new Vector2I(3, 0));
+        map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(3, 0));
+        map.SetCell((Vector2I)GameDef.EndLocation, 0, new Vector2I(4, 0));
 
         InitObstacles();
 
@@ -102,10 +102,6 @@ public partial class Play : Node2D
         enemiesNode = GetNode<Node2D>("Enemies");
 
         AStarHex.SetupHexGrid(map);
-
-        TileMapLayer towerMask = (TileMapLayer)GetTree().GetFirstNodeInGroup("towermask");
-        towerMask.SetCell(towerMask.LocalToMap(GameDef.StartLocation), 0, new Vector2I(2, 0));
-        towerMask.SetCell(towerMask.LocalToMap(GameDef.EndLocation), 0, new Vector2I(3, 0));
 
         waveTimer.WaitTime = GameDef.Waves[0].Interval;
         waveTimer.Start();
@@ -126,6 +122,15 @@ public partial class Play : Node2D
         };
     }
 
+    public override void _Draw()
+    {
+        foreach (Vector2I cell in map.GetUsedCells())
+        {
+            //DrawCircle(cell, 3, new Color(255, 0, 0, 255), true);
+
+        }
+    }
+
     public override void _Process(double delta)
     {
         if (State == LevelState.Running &&
@@ -143,7 +148,7 @@ public partial class Play : Node2D
     {
         foreach (Vector2 obs in GameDef.Obstacles)
         {
-            map.SetCell((Vector2I)obs, 00, new Vector2I(1, 0));
+            map.SetCell((Vector2I)obs, 0, new Vector2I(2, 0));
         }
     }
 

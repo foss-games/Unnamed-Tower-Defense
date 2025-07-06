@@ -1,5 +1,4 @@
 using System.Linq;
-using FOSSGames;
 using Godot;
 
 public partial class Tower : Node2D
@@ -27,7 +26,7 @@ public partial class Tower : Node2D
     public TowerState State = TowerState.Disabled;
     [Signal]
     public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
-
+    private Vector2 tileMapLayerOffset;
     public override void _Ready()
     {
         play = (Play)GetTree().GetFirstNodeInGroup("play");
@@ -42,7 +41,9 @@ public partial class Tower : Node2D
         RateOfFire = TowerType.Attacks[0].ROF;
         Damage = TowerType.Attacks[0].Damage;
         TargetingRange = TowerType.Attacks[0].Range;
+        Cost = TowerType.Cost;
 
+        tileMapLayerOffset = GetTree().GetFirstNodeInGroup("background").GetNode<TileMapLayer>("TileMapLayer").Position;
 
         ShotTimer.WaitTime = RateOfFire;
 
@@ -50,28 +51,17 @@ public partial class Tower : Node2D
 
         TowerStateChanged += OnStateChange;
 
-        Sprite2D turret = GetNode<Sprite2D>("Turret");
-        Sprite2D body = GetNode<Sprite2D>("Body");
-
         circle.Visible = true;
 
+        Modulate = TowerType.Sprite.Modulate;
 
-        // body.Texture = new AtlasTexture
-        // {
-        //     Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
-        //     Region = new Rect2(0, TowerType.Sprite.Frame * 32, 32, 32)
-        // };
+        Sprite2D body = GetNode<Sprite2D>("Body");
+        Sprite2D turret = GetNode<Sprite2D>("Turret");
 
-        // turret.Texture = new AtlasTexture
-        // {
-        //     Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
-        //     Region = new Rect2(32, TowerType.Sprite.Frame * 32, 32, 32)
-        // };
-
-        // Visible = true;
-        //State = TowerState.Enabled;
-
-        QueueRedraw();
+        body.Texture = (AtlasTexture)body.Texture.Duplicate();
+        turret.Texture = (AtlasTexture)turret.Texture.Duplicate();
+        (body.Texture as AtlasTexture).Region = new Rect2(0, TowerType.Sprite.Frame * 32, 0, 0);
+        (turret.Texture as AtlasTexture).Region = new Rect2(32, TowerType.Sprite.Frame * 32, 0, 0);
     }
 
     public bool PlacementWillBlockPath(Vector2I destination)
@@ -86,9 +76,9 @@ public partial class Tower : Node2D
         }
         astar.RemoveHexPoint(destination);
 
-        Vector2[] path = astar.GetPath((Vector2I)play.GameDef.StartLocation, (Vector2I)play.GameDef.EndLocation);
+        Vector2[] fullPath = astar.GetPath((Vector2I)play.GameDef.StartLocation, (Vector2I)play.GameDef.EndLocation);
 
-        return path.Length < 1;
+        return fullPath.Length < 1;
     }
 
     private void RemovePointFromNavigation(Vector2I destination)
@@ -165,14 +155,19 @@ public partial class Tower : Node2D
             (bool)tileData.GetCustomData("endpos"))
         {
             QueueFree();
+            return;
         }
-        if (PlacementWillBlockPath(destination)) QueueFree();
+        if (PlacementWillBlockPath(destination))
+        {
+            QueueFree();
+            return;
+        }
 
         circle.Visible = false;
 
         RemovePointFromNavigation(destination);
 
-        GlobalPosition = play.map.MapToLocal(destination);
+        GlobalPosition = play.map.MapToLocal(destination) + tileMapLayerOffset;
 
         play.map.SetCell(destination, 0, new Vector2I(1, 0));
 

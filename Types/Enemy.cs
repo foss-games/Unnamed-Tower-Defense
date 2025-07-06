@@ -14,7 +14,8 @@ namespace FOSSGames
     }
     public enum EnemyStates
     {
-        Normal,
+        Enabled,
+        Disabled,
         Celebrating,
     }
 }

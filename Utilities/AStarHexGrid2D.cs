@@ -101,6 +101,12 @@ public partial class AStarHexGrid2D : AStar2D
 
     }
 
+    public void RemoveHexPoint(Vector2I point)
+    {
+        RemovePoint(CoordsToID(point));
+        PointsArray.Remove(point);
+    }
+
     public int CoordsToID(Vector2I coord)
     {
         return PointsArray.IndexOf(coord);
