@@ -10,24 +10,17 @@ public partial class Tower : Node2D
     public double TargetingRange;
     public double VisionRange;
     public double Cost;
-
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
     public Timer ShotTimer;
-
     private Node2D projectilesNode;
-
     private AStarHexGrid2D AStarHex;
-
     private Sprite2D body;
     private Sprite2D turret;
     private Sprite2D circle;
     private Line2D beam;
-
     private Play play;
     public FOSSGames.Tower TowerType;
-
     private Vector2I offset = new Vector2I(0, -60);
-
     public TowerState State = TowerState.Disabled;
     [Signal]
     public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
