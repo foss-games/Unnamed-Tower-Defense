@@ -174,19 +174,17 @@ public partial class Tower : Node2D
             hit.HP -= Damage;
         }
 
-        Timer timer = new Timer();
-        timer.WaitTime = 0.15;
-        timer.Timeout += HideBeam;
-        timer.Autostart = false;
-        timer.OneShot = true;
+        Timer timer = new()
+        {
+            WaitTime = 0.15,
+            Autostart = false,
+            OneShot = true,
+        };
+        timer.Timeout += () => { beam.Visible = false; };
         AddChild(timer);
         timer.Start();
 
 
-    }
-    private void HideBeam()
-    {
-        beam.Visible = false;
     }
     public override void _PhysicsProcess(double delta)
     {
