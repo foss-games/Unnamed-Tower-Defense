@@ -1,3 +1,4 @@
+using System.Linq;
 using FOSSGames;
 using Godot;
 
@@ -8,10 +9,11 @@ public partial class PurchaseArea : Node2D
     private PackedScene purcahsable = GD.Load<PackedScene>("res://PurchaseArea/Purchasable.tscn");
     public override void _Ready()
     {
-        play = (Play)GetTree().GetFirstNodeInGroup("play");
         container = GetNode<GridContainer>("PurchasableTowers");
 
-        foreach (FOSSGames.Tower t in Global.Instance.Towers)
+        Level level = Global.Instance.Levels[Global.Instance.SelectedLevelIndex];
+
+        foreach (FOSSGames.Tower t in Global.Instance.Towers.FindAll(t => level.AvailableTowers.Contains(t.GUID.ToString())))
         {
             Purchasable p = purcahsable.Instantiate<Purchasable>();
             p.CallDeferred("Init", t.GUID.ToString());

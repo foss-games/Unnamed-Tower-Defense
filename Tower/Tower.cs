@@ -32,7 +32,7 @@ public partial class Tower : Node2D
 
         AStarHex = play.AStarHex;
 
-        projectilesNode = (Node2D)GetTree().GetFirstNodeInGroup("projectiles");
+        projectilesNode = (Node2D)play.GetNode<Node2D>("Projectiles");
         ShotTimer = GetNode<Timer>("ShotTimer");
         circle = GetNode<Sprite2D>("Circle");
         body = GetNode<Sprite2D>("Body");
@@ -151,7 +151,7 @@ public partial class Tower : Node2D
         beam.Visible = true;
 
         PhysicsDirectSpaceState2D spaceState = GetWorld2D().DirectSpaceState;
-        Array<Rid> hitEnemies = [];
+        Array<Rid> hitEnemies = [.. GetTree().GetNodesInGroup("projectiles").Select(p => ((Projectile)p).GetRid())];
 
         for (int i = 0; i < GetTree().GetNodeCountInGroup("enemies"); i++)
         {

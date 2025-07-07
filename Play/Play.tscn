@@ -17,7 +17,7 @@ script = ExtResource("1_6m1a4")
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="Projectiles" type="Node2D" parent="." groups=["projectiles"]]
+[node name="Projectiles" type="Node2D" parent="."]
 
 [node name="PurchaseArea" parent="." instance=ExtResource("5_dl6rg")]
 
