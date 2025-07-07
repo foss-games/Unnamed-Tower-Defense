@@ -21,17 +21,8 @@ public partial class Purchasable : Control
         Sprite2D turret = container.GetNode<Sprite2D>("Turret");
         Sprite2D body = container.GetNode<Sprite2D>("Body");
 
-        body.Texture = new AtlasTexture
-        {
-            Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
-            Region = new Rect2(0, Tower.Sprite.Frame * 32, 0, 0)
-        };
-
-        turret.Texture = new AtlasTexture
-        {
-            Atlas = GD.Load<CompressedTexture2D>("res://Resources/towers/TowerTileSet.png"),
-            Region = new Rect2(32, Tower.Sprite.Frame * 32, 0, 0)
-        };
+        body.Frame = 7 * Tower.Sprite.Frame;
+        turret.Frame = body.Frame + 1;
 
         container.Modulate = Tower.Sprite.Modulate;
         label.Text = Tower.Cost.ToString();
