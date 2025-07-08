@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Resolvers;
 using Godot;
 using Godot.Collections;
 
@@ -26,6 +27,7 @@ public partial class Tower : Node2D
     public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
     private Vector2 tileMapLayerOffset;
 
+    //AudioStreamMP3 sound = AudioStreamMP3.New();
     public override void _Ready()
     {
         play = (Play)GetTree().GetFirstNodeInGroup("play");
@@ -128,6 +130,19 @@ public partial class Tower : Node2D
         projSprite.Modulate = TowerType.Sprite.Modulate;
         projectilesNode.AddChild(p);
         p.Damage = Damage;
+
+        //var file = FileAccess.Open("res://Resources/Towers/basic.mp3", FileAccess.ModeFlags.Read);
+        //var sound = 
+        AudioStreamPlayer2D play = new AudioStreamPlayer2D()
+        {
+            Stream = AudioStreamMP3.LoadFromFile("res://Resources/Towers/basic.mp3"),
+            VolumeLinear = 0.5f
+        };
+        AddChild(play);
+        play.Play();
+        //sound.Loop = false;
+
+
         p.Start(this, target);
     }
     private void DoAOEShot()
@@ -163,7 +178,13 @@ public partial class Tower : Node2D
             Enemy hit = (Enemy)result["collider"];
 
             hitEnemies.Add(hit.GetRid());
-
+            AudioStreamPlayer2D play = new AudioStreamPlayer2D()
+            {
+                Stream = AudioStreamMP3.LoadFromFile("res://Resources/Towers/beam.mp3"),
+                VolumeLinear = 0.25f
+            };
+            AddChild(play);
+            play.Play();
             hit.HP -= Damage;
         }
 
@@ -228,10 +249,9 @@ public partial class Tower : Node2D
         circle.Visible = false;
 
         RemovePointFromNavigation(destination);
+        play.map.SetCell(destination, 0, new Vector2I(1, 0));
 
         GlobalPosition = play.map.MapToLocal(destination) + tileMapLayerOffset;
-
-        play.map.SetCell(destination, 0, new Vector2I(1, 0));
 
         play.Credits -= Cost;
 
