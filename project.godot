@@ -14,7 +14,8 @@ config/name="Unnamed Tower Defense"
 run/main_scene="uid://cssu18csouqbd"
 run/print_header=false
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
-boot_splash/show_image=false
+boot_splash/bg_color=Color(0.111197, 0.111197, 0.111197, 1)
+boot_splash/image="uid://vlb7c1kr6qvo"
 config/icon="res://icon.svg"
 
 [autoload]
