@@ -2,9 +2,13 @@
   "GUID": "1761af84-6b4c-4c2e-b692-17ae7d255d13",
   "EndLocation": { "X": 20, "Y": 12 },
   "StartLocation": { "X": 2, "Y": 12 },
-  "StartingCredits": 10,
+  "StartingCredits": 100,
   "MaxHP": 10,
-  "AvailableTowers": ["da15da79-28cc-4b60-a768-91d7bb3fb475"],
+  "AvailableTowers": [
+    "da15da79-28cc-4b60-a768-91d7bb3fb475",
+    "a6a04a4b-43c9-4dc0-94bf-1de22dc3e041",
+    "92d92686-0031-4ba7-bc37-a90f7719fa58"
+  ],
   "Waves": [
     {
       "Interval": 5,
