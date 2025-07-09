@@ -21,7 +21,7 @@ public partial class Tower : Node2D
     private Line2D beam;
     private Play play;
     public FOSSGames.Tower TowerType;
-    private Vector2I offset = new Vector2I(0, -60);
+    private Vector2I offset = new Vector2I(0, -80);
     public TowerState State = TowerState.Disabled;
     [Signal]
     public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
