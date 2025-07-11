@@ -9,29 +9,32 @@ script = ExtResource("1_5ms5j")
 [node name="Background" parent="." instance=ExtResource("1_ku1ks")]
 
 [node name="Title" type="Label" parent="."]
-offset_right = 587.0
-offset_bottom = 228.0
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 391.0
+offset_bottom = 186.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 60
-text = "Tower Defense"
+text = "Tower
+Defense"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PlayButton" type="Button" parent="."]
-offset_left = 208.0
-offset_top = 606.0
-offset_right = 411.0
-offset_bottom = 715.0
+offset_left = 103.0
+offset_top = 587.0
+offset_right = 306.0
+offset_bottom = 696.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Play"
 
 [node name="MapMakerButton" type="Button" parent="."]
 visible = false
-offset_left = 468.0
-offset_top = 955.0
-offset_right = 582.0
-offset_bottom = 993.0
+offset_left = 271.0
+offset_top = 802.0
+offset_right = 385.0
+offset_bottom = 840.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Map Builder"
@@ -40,17 +43,17 @@ text = "Map Builder"
 visible = false
 offset_left = 38.0
 offset_top = 284.0
-offset_right = 564.0
+offset_right = 362.0
 offset_bottom = 839.0
 size_flags_horizontal = 6
-columns = 4
+columns = 3
 
 [node name="BackButton" type="Button" parent="."]
 visible = false
-offset_left = 228.0
-offset_top = 926.0
-offset_right = 328.0
-offset_bottom = 989.0
+offset_left = 157.0
+offset_top = 767.0
+offset_right = 257.0
+offset_bottom = 830.0
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 40

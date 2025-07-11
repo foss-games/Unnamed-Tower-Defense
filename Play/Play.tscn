@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://b852g3l2xbbcx"]
+[gd_scene load_steps=7 format=3 uid="uid://b852g3l2xbbcx"]
 
 [ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="1_1og73"]
 [ext_resource type="Script" uid="uid://cj45nmp6qkt4x" path="res://Play/Play.cs" id="1_6m1a4"]
 [ext_resource type="PackedScene" uid="uid://bewucabwxc87q" path="res://HUD/HUD.tscn" id="3_6m1a4"]
 [ext_resource type="PackedScene" uid="uid://bumy20hta7362" path="res://PurchaseArea/Purchase Area.tscn" id="5_dl6rg"]
 [ext_resource type="PackedScene" uid="uid://c3c4bj1gsbtpk" path="res://Play/EndMenu.tscn" id="5_w7dcf"]
+[ext_resource type="PackedScene" uid="uid://b6bgwcamiw2w3" path="res://PurchaseArea/Upgrade Area.tscn" id="5_x3xjk"]
 
 [node name="Play" type="Node2D" groups=["play"]]
 script = ExtResource("1_6m1a4")
@@ -20,6 +21,9 @@ script = ExtResource("1_6m1a4")
 [node name="Projectiles" type="Node2D" parent="."]
 
 [node name="PurchaseArea" parent="." instance=ExtResource("5_dl6rg")]
+
+[node name="UpgradeArea" parent="." instance=ExtResource("5_x3xjk")]
+visible = false
 
 [node name="SpawnTimer" type="Timer" parent="."]
 wait_time = 0.25

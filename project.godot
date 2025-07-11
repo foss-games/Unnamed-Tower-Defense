@@ -28,10 +28,9 @@ settings/stdout/print_fps=true
 
 [display]
 
-window/size/viewport_width=590
-window/size/viewport_height=1000
+window/size/viewport_width=394
+window/size/viewport_height=852
 window/size/resizable=false
-window/size/borderless=true
 window/stretch/mode="viewport"
 window/handheld/orientation=1
 window/vsync/vsync_mode=0
