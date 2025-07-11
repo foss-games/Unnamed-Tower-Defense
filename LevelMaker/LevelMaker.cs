@@ -35,9 +35,13 @@ public partial class LevelMaker : Node2D
                     switch (type)
                     {
                         case 0:
-                        case 1:
                             break;
-                        case 2: //start
+                        case 1:
+                            type++;
+                            break;
+                        case 2: //wall
+                            break;
+                        case 3: //start
                             if (startSet && endSet)
                             {
                                 type = 0;
@@ -51,7 +55,7 @@ public partial class LevelMaker : Node2D
                             }
                             startSet = true;
                             break;
-                        case 3: //end
+                        case 4: //end
                             if (endSet)
                             {
                                 type = 0;
@@ -59,7 +63,7 @@ public partial class LevelMaker : Node2D
                             endSet = true;
                             startSet = false;
                             break;
-                        case 4:
+                        case 5:
                             endSet = false;
                             type = 0;
                             break;
