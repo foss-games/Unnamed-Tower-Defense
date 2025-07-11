@@ -274,6 +274,14 @@ public partial class Tower : Node2D
             turret.LookAt(target.GlobalPosition);
         }
     }
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("Click"))
+        {
+            GD.Print("Upgrade!");
+        }
+    }
+
     private void Drag()
     {
         GlobalPosition = GetGlobalMousePosition() + offset;
