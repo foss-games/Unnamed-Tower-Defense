@@ -38,7 +38,7 @@
   ],
   "Upgrades": [
     {
-      "Cost": 5.0,
+      "Cost": 10.0,
       "UpgradeEffects": [
         {
           "Effect": 1,
