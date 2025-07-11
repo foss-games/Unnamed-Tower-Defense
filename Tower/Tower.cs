@@ -11,6 +11,7 @@ public partial class Tower : Node2D
     public double TargetingRange;
     public double VisionRange;
     public double Cost;
+    public int Level = 1;
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
     public Timer ShotTimer;
     private Node2D projectilesNode;
@@ -64,6 +65,25 @@ public partial class Tower : Node2D
         (body.Texture as AtlasTexture).Region = new Rect2(0, TowerType.Sprite.Frame * 32, 0, 0);
         (turret.Texture as AtlasTexture).Region = new Rect2(32, TowerType.Sprite.Frame * 32, 0, 0);
     }
+    // public override void _Process(double delta)
+    // {
+    //     if (Input.IsActionPressed("Click") &&
+    //         (State == TowerState.Enabled || State == TowerState.Upgrading)// &&
+    //     )//LocationWithinBounds(GetGlobalMousePosition()))
+    //     {
+    //         //GD.Print(State);
+    //         ((UpgradeArea)play.GetNode<Node2D>("UpgradeArea")).Show(this);
+    //     }
+    // }
+
+    // public bool LocationWithinBounds(Vector2 location)
+    // {
+    //     return location.X <= GlobalPosition.X + 16 &&
+    //                     location.X >= GlobalPosition.X - 16 &&
+    //                     location.Y <= GlobalPosition.Y + 16 &&
+    //                     location.Y >= GlobalPosition.Y - 16;
+    // }
+
     public bool PlacementWillBlockPath(Vector2I destination)
     {
         AStarHexGrid2D astar = new AStarHexGrid2D();
@@ -276,10 +296,14 @@ public partial class Tower : Node2D
     }
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("Click"))
-        {
-            GD.Print("Upgrade!");
-        }
+        // if (@event.IsActionPressed("Click"))
+        // {
+        //     ((UpgradeArea)play.GetNode<Node2D>("UpgradeArea")).Show(this);
+        // }
+    }
+    public void Upgrade()
+    {
+        Level++;
     }
 
     private void Drag()
