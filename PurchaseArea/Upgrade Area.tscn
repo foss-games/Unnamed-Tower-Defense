@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6bgwcamiw2w3"]
+[gd_scene load_steps=4 format=3 uid="uid://b6bgwcamiw2w3"]
 
 [ext_resource type="Script" uid="uid://b00wfyvqvgbve" path="res://PurchaseArea/PurchaseArea.cs" id="1_0bhm5"]
+[ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="2_yfq5l"]
+[ext_resource type="PackedScene" uid="uid://di42w7jdrnfdn" path="res://PurchaseArea/Purchasable.tscn" id="3_u11m1"]
 
 [node name="PurchaseArea" type="Node2D"]
 script = ExtResource("1_0bhm5")
+
+[node name="Background" parent="." instance=ExtResource("2_yfq5l")]
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = 920.0
@@ -13,13 +17,22 @@ size_flags_horizontal = 6
 size_flags_vertical = 8
 color = Color(0, 0, 0, 1)
 
-[node name="PurchasableTowers" type="GridContainer" parent="." groups=["towerscollection"]]
-offset_top = 930.0
-offset_right = 590.0
-offset_bottom = 1000.0
-size_flags_horizontal = 6
-columns = 2
+[node name="Purchasable" parent="." instance=ExtResource("3_u11m1")]
+offset_top = 921.0
+offset_bottom = 921.0
+scale = Vector2(2, 2)
 
-[node name="Control" type="Control" parent="PurchasableTowers"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Button" type="Button" parent="."]
+offset_left = 441.0
+offset_top = 931.0
+offset_right = 580.0
+offset_bottom = 989.0
+text = "Upgrade"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 101.0
+offset_top = 935.0
+offset_right = 190.0
+offset_bottom = 984.0
+text = "Level 1
+Upgrade $5"
