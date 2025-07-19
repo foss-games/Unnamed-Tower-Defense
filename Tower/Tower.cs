@@ -94,7 +94,7 @@ public partial class Tower : Node2D
         {
             astar.DisconnectPoints(cellID, connId, false);
         }
-        astar.RemoveHexPoint(destination);
+        astar.RemoveHexPoint(cellID);
 
         Vector2[] fullPath = astar.GetPath((Vector2I)play.GameDef.StartLocation, (Vector2I)play.GameDef.EndLocation);
 
@@ -294,13 +294,7 @@ public partial class Tower : Node2D
             turret.LookAt(target.GlobalPosition);
         }
     }
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        // if (@event.IsActionPressed("Click"))
-        // {
-        //     ((UpgradeArea)play.GetNode<Node2D>("UpgradeArea")).Show(this);
-        // }
-    }
+
     public void Upgrade()
     {
         Level++;
