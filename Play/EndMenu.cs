@@ -18,7 +18,7 @@ public partial class EndMenu : Node2D
         {
             GetNode<Label>("Label").Text = "Congratulations!";
             grid.GetNode<Button>("ContinueButton").Text = "Next Level!";
-            if (Global.Instance.SelectedLevelIndex >= Global.Instance.Levels.Count)
+            if (Global.Instance.SelectedLevelIndex >= Global.Instance.Levels.Count - 1)
             {
                 grid.GetNode<Button>("ContinueButton").Visible = false;
             }
