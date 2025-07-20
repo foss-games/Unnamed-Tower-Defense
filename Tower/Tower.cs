@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Resolvers;
+using FOSSGames;
 using Godot;
 using Godot.Collections;
 
@@ -41,6 +42,7 @@ public partial class Tower : Node2D
         body = GetNode<Sprite2D>("Body");
         turret = GetNode<Sprite2D>("Turret");
         beam = turret.GetNode<Line2D>("Beam");
+        GetNode<Button>("Button").Pressed += Clicked;
 
         VisionRange = TowerType.VisionRange;
         RateOfFire = TowerType.Attacks[0].ROF;
@@ -63,27 +65,13 @@ public partial class Tower : Node2D
         body.Texture = (AtlasTexture)body.Texture.Duplicate();
         turret.Texture = (AtlasTexture)turret.Texture.Duplicate();
         (body.Texture as AtlasTexture).Region = new Rect2(0, TowerType.Sprite.Frame * 32, 0, 0);
-        (turret.Texture as AtlasTexture).Region = new Rect2(32, TowerType.Sprite.Frame * 32, 0, 0);
+        (turret.Texture as AtlasTexture).Region = new Rect2(0, TowerType.Sprite.Frame * 32, 0, 0);
     }
-    // public override void _Process(double delta)
-    // {
-    //     if (Input.IsActionPressed("Click") &&
-    //         (State == TowerState.Enabled || State == TowerState.Upgrading)// &&
-    //     )//LocationWithinBounds(GetGlobalMousePosition()))
-    //     {
-    //         //GD.Print(State);
-    //         ((UpgradeArea)play.GetNode<Node2D>("UpgradeArea")).Show(this);
-    //     }
-    // }
-
-    // public bool LocationWithinBounds(Vector2 location)
-    // {
-    //     return location.X <= GlobalPosition.X + 16 &&
-    //                     location.X >= GlobalPosition.X - 16 &&
-    //                     location.Y <= GlobalPosition.Y + 16 &&
-    //                     location.Y >= GlobalPosition.Y - 16;
-    // }
-
+    public void Clicked()
+    {
+        ((UpgradeArea)play.GetNode<Node2D>("UpgradeArea")).Show(this);
+        circle.Visible = true;
+    }
     public bool PlacementWillBlockPath(Vector2I destination)
     {
         AStarHexGrid2D astar = new AStarHexGrid2D();
@@ -294,12 +282,49 @@ public partial class Tower : Node2D
             turret.LookAt(target.GlobalPosition);
         }
     }
-
     public void Upgrade()
     {
+        if (Level > TowerType.Upgrades.Length)
+            return;
+
+        Upgrade upgrade = TowerType.Upgrades[Level - 1];
+
+        if (play.Credits < upgrade.Cost)
+            return;
+
+        foreach (UpgradeEffect effect in upgrade.UpgradeEffects)
+        {
+            switch (effect.Effect)
+            {
+                case UpgradeEffectEffects.Damage:
+                    Damage += effect.Value;
+                    break;
+                case UpgradeEffectEffects.DamageMult:
+                    Damage *= effect.Value;
+                    break;
+                case UpgradeEffectEffects.RateOfFire:
+                    RateOfFire += effect.Value;
+                    ShotTimer.WaitTime = RateOfFire;
+                    break;
+                case UpgradeEffectEffects.RateOfFireMult:
+                    RateOfFire *= effect.Value;
+                    ShotTimer.WaitTime = RateOfFire;
+                    break;
+                case UpgradeEffectEffects.TargetingRange:
+                    TargetingRange += effect.Value * 32;
+                    //update targeting circle
+                    circle.Scale = new Vector2((float)TargetingRange, (float)TargetingRange);
+                    break;
+                case UpgradeEffectEffects.TargetingRangeMult:
+                    TargetingRange *= effect.Value;
+                    //update targeting circle
+                    circle.Scale = new Vector2((float)TargetingRange, (float)TargetingRange);
+                    break;
+            }
+        }
+        turret.Frame++;
         Level++;
     }
-
     private void Drag()
     {
         GlobalPosition = GetGlobalMousePosition() + offset;

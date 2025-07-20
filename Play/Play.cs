@@ -142,8 +142,13 @@ public partial class Play : Node2D
             EmitSignal(SignalName.LevelWon);
         }
     }
-
-
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsAction("Click") && GetNode<Node2D>("UpgradeArea").Visible)
+        {
+            GetNode<Node2D>("UpgradeArea").Visible = false;
+        }
+    }
     public void InitObstacles()
     {
         foreach (Vector2 obs in GameDef.Obstacles)

@@ -5,9 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://di42w7jdrnfdn" path="res://PurchaseArea/Purchasable.tscn" id="3_u11m1"]
 
 [node name="UpgradeArea" type="Node2D"]
+position = Vector2(0, 2)
 script = ExtResource("1_yfq5l")
 
 [node name="Background" parent="." instance=ExtResource("2_yfq5l")]
+visible = false
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = 770.0

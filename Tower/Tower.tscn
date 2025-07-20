@@ -42,4 +42,12 @@ texture = ExtResource("3_pxrlm")
 
 [node name="Markers" type="Node2D" parent="."]
 
+[node name="Button" type="Button" parent="."]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+focus_mode = 0
+flat = true
+
 [connection signal="timeout" from="ShotTimer" to="." method="OnShotTimerTimeout"]
