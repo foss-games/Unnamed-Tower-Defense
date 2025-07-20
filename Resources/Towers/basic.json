@@ -43,6 +43,66 @@
         {
           "Effect": 1,
           "Value": 1.5
+        },
+        {
+          "Effect": 5,
+          "Value": 1.1
+        }
+      ],
+      "Markers": []
+    },
+    {
+      "Cost": 5.0,
+      "UpgradeEffects": [
+        {
+          "Effect": 1,
+          "Value": 1.5
+        },
+        {
+          "Effect": 5,
+          "Value": 1.1
+        }
+      ],
+      "Markers": []
+    },
+    {
+      "Cost": 5.0,
+      "UpgradeEffects": [
+        {
+          "Effect": 1,
+          "Value": 1.5
+        },
+        {
+          "Effect": 5,
+          "Value": 1.1
+        }
+      ],
+      "Markers": []
+    },
+    {
+      "Cost": 5.0,
+      "UpgradeEffects": [
+        {
+          "Effect": 1,
+          "Value": 1.5
+        },
+        {
+          "Effect": 5,
+          "Value": 1.1
+        }
+      ],
+      "Markers": []
+    },
+    {
+      "Cost": 5.0,
+      "UpgradeEffects": [
+        {
+          "Effect": 1,
+          "Value": 1.5
+        },
+        {
+          "Effect": 5,
+          "Value": 1.1
         }
       ],
       "Markers": []
