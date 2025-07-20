@@ -15,7 +15,10 @@ public partial class UpgradeArea : Node2D
 
     public void Show(Tower tower)
     {
-        tower.LevelChanged += TowerUpgraded;
+        tower.LevelChanged += () =>
+        {
+            Show(target);
+        };
         target = tower;
 
         Purchasable sprite = GetNode<Purchasable>("Purchasable");
@@ -40,10 +43,5 @@ public partial class UpgradeArea : Node2D
     public void UpgradeTower()
     {
         target.Upgrade();
-    }
-    public void TowerUpgraded()
-    {
-        target.LevelChanged -= TowerUpgraded;
-        Show(target);
     }
 }
