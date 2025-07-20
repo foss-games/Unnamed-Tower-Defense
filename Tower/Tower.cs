@@ -13,12 +13,21 @@ public partial class Tower : Node2D
     public double VisionRange;
     public double Cost;
     public int Level = 1;
+    [Signal]
+    public delegate void LevelChangedEventHandler();
     public PackedScene projectileScene = GD.Load<PackedScene>("res://Tower/Projectile/Projectile.tscn");
     public Timer ShotTimer;
     private Node2D projectilesNode;
     private AStarHexGrid2D AStarHex;
     private Sprite2D body;
     private Sprite2D turret;
+    public int TurretFrame
+    {
+        get
+        {
+            return turret.Frame;
+        }
+    }
     private Sprite2D circle;
     private Line2D beam;
     private Play play;
@@ -26,7 +35,7 @@ public partial class Tower : Node2D
     private Vector2I offset = new Vector2I(0, -80);
     public TowerState State = TowerState.Disabled;
     [Signal]
-    public delegate void TowerStateChangedEventHandler(TowerState oldState, TowerState newState);
+    public delegate void StateChangedEventHandler(TowerState oldState, TowerState newState);
     private Vector2 tileMapLayerOffset;
 
     //AudioStreamMP3 sound = AudioStreamMP3.New();
@@ -56,7 +65,7 @@ public partial class Tower : Node2D
 
         circle.Scale *= (float)TargetingRange;
 
-        TowerStateChanged += OnStateChange;
+        StateChanged += OnStateChange;
 
         circle.Visible = true;
 
@@ -324,6 +333,8 @@ public partial class Tower : Node2D
         }
         turret.Frame++;
         Level++;
+        play.Credits -= upgrade.Cost;
+        EmitSignal(SignalName.LevelChanged);
     }
     private void Drag()
     {
