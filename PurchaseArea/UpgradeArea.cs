@@ -11,8 +11,8 @@ public partial class UpgradeArea : Node2D
         label = GetNode<Label>("Label");
         button = GetNode<Button>("Button");
         button.Pressed += UpgradeTower;
+        VisibilityChanged += OnVisibiltyChanged;
     }
-
     public void Show(Tower tower)
     {
         tower.LevelChanged += () =>
@@ -31,6 +31,7 @@ public partial class UpgradeArea : Node2D
         {
             label.Text += "No Upgrades Availalbe";
             button.Visible = false;
+            tower.Circle.Visible = false;
         }
         else
         {
@@ -43,5 +44,12 @@ public partial class UpgradeArea : Node2D
     public void UpgradeTower()
     {
         target.Upgrade();
+    }
+    public void OnVisibiltyChanged()
+    {
+        if (!Visible)
+        {
+            target.Circle.Visible = false;
+        }
     }
 }

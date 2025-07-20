@@ -28,7 +28,7 @@ public partial class Tower : Node2D
             return turret.Frame;
         }
     }
-    private Sprite2D circle;
+    public Sprite2D Circle;
     private Line2D beam;
     private Play play;
     public FOSSGames.Tower TowerType;
@@ -47,7 +47,7 @@ public partial class Tower : Node2D
 
         projectilesNode = (Node2D)play.GetNode<Node2D>("Projectiles");
         ShotTimer = GetNode<Timer>("ShotTimer");
-        circle = GetNode<Sprite2D>("Circle");
+        Circle = GetNode<Sprite2D>("Circle");
         body = GetNode<Sprite2D>("Body");
         turret = GetNode<Sprite2D>("Turret");
         beam = turret.GetNode<Line2D>("Beam");
@@ -63,11 +63,11 @@ public partial class Tower : Node2D
 
         ShotTimer.WaitTime = RateOfFire;
 
-        circle.Scale *= (float)TargetingRange;
+        Circle.Scale *= (float)TargetingRange;
 
         StateChanged += OnStateChange;
 
-        circle.Visible = true;
+        Circle.Visible = true;
 
         Modulate = TowerType.Sprite.Modulate;
 
@@ -79,7 +79,7 @@ public partial class Tower : Node2D
     public void Clicked()
     {
         ((UpgradeArea)play.GetNode<Node2D>("UpgradeArea")).Show(this);
-        circle.Visible = true;
+        Circle.Visible = true;
     }
     public bool PlacementWillBlockPath(Vector2I destination)
     {
@@ -263,7 +263,7 @@ public partial class Tower : Node2D
             return;
         }
 
-        circle.Visible = false;
+        Circle.Visible = false;
 
         RemovePointFromNavigation(destination);
         play.map.SetCell(destination, 0, new Vector2I(1, 0));
@@ -322,12 +322,12 @@ public partial class Tower : Node2D
                 case UpgradeEffectEffects.TargetingRange:
                     TargetingRange += effect.Value * 32;
                     //update targeting circle
-                    circle.Scale = new Vector2((float)TargetingRange, (float)TargetingRange);
+                    Circle.Scale = new Vector2((float)TargetingRange, (float)TargetingRange);
                     break;
                 case UpgradeEffectEffects.TargetingRangeMult:
                     TargetingRange *= effect.Value;
                     //update targeting circle
-                    circle.Scale = new Vector2((float)TargetingRange, (float)TargetingRange);
+                    Circle.Scale = new Vector2((float)TargetingRange, (float)TargetingRange);
                     break;
             }
         }
