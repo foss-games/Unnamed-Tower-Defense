@@ -90,8 +90,10 @@ namespace FOSSGames
         }
         public override void Write(Utf8JsonWriter writer, Vector2I value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue($"{{X: {value.X}, Y: {value.Y}}}");
-            //throw new NotImplementedException();
+            writer.WriteStartObject();
+            writer.WriteNumber("X", value.X);
+            writer.WriteNumber("Y", value.Y);
+            writer.WriteEndObject();
         }
     }
 }
