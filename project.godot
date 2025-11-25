@@ -14,7 +14,7 @@ config/name="Unnamed Tower Defense"
 run/main_scene="uid://cssu18csouqbd"
 run/print_header=false
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
-boot_splash/bg_color=Color(0.111197, 0.111197, 0.111197, 1)
+boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/image="uid://vlb7c1kr6qvo"
 config/icon="res://icon.svg"
 
@@ -51,6 +51,7 @@ projectiles=""
 towerscollection=""
 towermask=""
 pathtest=""
+glow=""
 
 [input]
 
@@ -76,4 +77,5 @@ pointing/emulate_touch_from_mouse=true
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+viewport/hdr_2d=true
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Godot;
 
@@ -14,7 +16,7 @@ namespace FOSSGames
         [JsonInclude]
         public Vector2 EndLocation;
         [JsonInclude]
-        public Vector2[] Obstacles;
+        public List<Vector2> Obstacles;
         [JsonInclude]
         public double StartingCredits;
         [JsonInclude]
@@ -23,7 +25,18 @@ namespace FOSSGames
         public List<Wave> Waves;
         [JsonInclude]
         public string[] AvailableTowers;
+        [JsonIgnore]
         public string Filename;
+        public Level Clone()
+        {
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.Converters.Add(new Vector2Converter());
+            options.Converters.Add(new Vector2IConverter());
+            options.Converters.Add(new EnemyConverter());
+            options.TypeInfoResolver = SourceGenerationContext.Default;
+
+            return JsonSerializer.Deserialize<Level>(JsonSerializer.Serialize(this, options), options);
+        }
     }
 
     public class Wave

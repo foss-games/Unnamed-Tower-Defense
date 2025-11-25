@@ -10,9 +10,9 @@ script = ExtResource("1_5ms5j")
 
 [node name="Title" type="Label" parent="."]
 offset_left = 1.0
-offset_top = 2.0
+offset_top = 84.0
 offset_right = 391.0
-offset_bottom = 186.0
+offset_bottom = 268.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 60
 text = "Tower

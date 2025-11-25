@@ -7,7 +7,7 @@
 atlas = ExtResource("2_rji2k")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rji2k"]
-radius = 4.12311
+radius = 5.0
 
 [node name="Projectile" type="CharacterBody2D" groups=["projectiles"]]
 collision_layer = 4

@@ -10,7 +10,9 @@ public partial class PurchaseArea : Node2D
     public override void _Ready()
     {
         container = GetNode<GridContainer>("PurchasableTowers");
-
+        play = (Play)GetTree().GetFirstNodeInGroup("play");
+        //bypass for level builder
+        if (play == null) return;
         Level level = Global.Instance.Levels[Global.Instance.SelectedLevelIndex];
 
         foreach (FOSSGames.Tower t in Global.Instance.Towers.FindAll(t => level.AvailableTowers.Contains(t.GUID.ToString())))

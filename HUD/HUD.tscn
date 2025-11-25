@@ -1,13 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bewucabwxc87q"]
+[gd_scene load_steps=2 format=3 uid="uid://bewucabwxc87q"]
 
 [ext_resource type="Script" uid="uid://dmtua80jryd2k" path="res://HUD/Hud.cs" id="1_f31rt"]
-[ext_resource type="PackedScene" uid="uid://dwj65b0h85u10" path="res://Background.tscn" id="2_b7ubu"]
 
 [node name="Hud" type="Node2D" groups=["hud"]]
 script = ExtResource("1_f31rt")
-
-[node name="Background" parent="." instance=ExtResource("2_b7ubu")]
-visible = false
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 394.0

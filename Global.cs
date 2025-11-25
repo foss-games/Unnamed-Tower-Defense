@@ -58,6 +58,18 @@ namespace FOSSGames
                 level.Filename = filename;
                 Levels.Add(level);
             }
+
+            using DirAccess ldir = DirAccess.Open(@"C:\temp\levels\");
+            if (ldir == null) return;
+
+            foreach (string filename in ldir.GetFiles())
+            {
+                if (!filename.EndsWith("json")) continue;
+                string json = FileAccess.Open($@"C:\temp\levels\{filename}", FileAccess.ModeFlags.Read).GetAsText();
+                Level level = JsonSerializer.Deserialize<Level>(json, options);
+                level.Filename = filename;
+                Levels.Add(level);
+            }
         }
 
         public void LoadTowers()

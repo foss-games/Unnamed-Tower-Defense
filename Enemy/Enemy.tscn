@@ -5,10 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://dceah42k2makn" path="res://Enemy/deathparticles.tscn" id="3_vonkd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vi685"]
-radius = 12.0
+radius = 18.0278
 
 [node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
-visible = false
 collision_layer = 2
 motion_mode = 1
 wall_min_slide_angle = 0.0

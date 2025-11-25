@@ -17,15 +17,14 @@ public partial class Purchasable : Control
 
         Button button = GetNode<Button>("Button");
         button.ButtonDown += TowerPickedUp;
-        Node2D container = button.GetNode<Node2D>("Node2D");
         Label label = GetNode<Label>("Label");
-        Turret = container.GetNode<Sprite2D>("Turret");
-        Sprite2D body = container.GetNode<Sprite2D>("Body");
+        Turret = GetNode<Sprite2D>("Turret");
+        Sprite2D body = GetNode<Sprite2D>("Body");
 
         body.Frame = 7 * Tower.Sprite.Frame;
         Turret.Frame = body.Frame + 1;
 
-        container.Modulate = Tower.Sprite.Modulate;
+        Modulate = Tower.Sprite.Modulate;
         label.Text = Tower.Cost.ToString();
     }
 

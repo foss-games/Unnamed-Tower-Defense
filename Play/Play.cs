@@ -86,7 +86,7 @@ public partial class Play : Node2D
     public override void _Ready()
     {
         GD.Print("Play._Ready()");
-        GameDef = Global.Instance.Levels[Global.Instance.SelectedLevelIndex];
+        GameDef = Global.Instance.Levels[Global.Instance.SelectedLevelIndex].Clone();
 
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
         map.SetCell((Vector2I)GameDef.StartLocation, 0, new Vector2I(3, 0));
@@ -120,16 +120,10 @@ public partial class Play : Node2D
         {
             waveTimer.WaitTime = GameDef.Waves[CurrentWave].Interval;
         };
+
     }
 
-    public override void _Draw()
-    {
-        foreach (Vector2I cell in map.GetUsedCells())
-        {
-            //DrawCircle(cell, 3, new Color(255, 0, 0, 255), true);
 
-        }
-    }
 
     public override void _Process(double delta)
     {
@@ -156,7 +150,6 @@ public partial class Play : Node2D
             map.SetCell((Vector2I)obs, 0, new Vector2I(2, 0));
         }
     }
-
     public void NextWave()
     {
         GD.Print("Play.NextWave()");

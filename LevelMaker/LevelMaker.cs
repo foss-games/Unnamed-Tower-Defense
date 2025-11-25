@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Security.Principal;
 using System.Text.Json;
 using FOSSGames;
 using Godot;
@@ -11,6 +14,7 @@ public partial class LevelMaker : Node2D
     public override void _Ready()
     {
         map = GetNode<Node2D>("Background").GetNode<TileMapLayer>("TileMapLayer");
+        debug = GetNode<Node2D>("Background").GetNode<Label>("DEBUG");
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -82,30 +86,70 @@ public partial class LevelMaker : Node2D
 
     public void OnButtonPressed()
     {
-        string output = "\"Obstacles\":[";
+        Level l = new Level();
+        l.GUID = Guid.NewGuid();
+        l.Obstacles = [];
+        l.Waves = [
+            new Wave(){
+                Interval = 10,
+                Enemies = []
+            }
+        ];
+        l.AvailableTowers = ["da15da79-28cc-4b60-a768-91d7bb3fb475"];
+        l.MaxHP = 1;
+
         foreach (Vector2I cell in map.GetUsedCells())
         {
             //Skip edge walls
-            if (cell.X <= -1 || cell.X >= 24) continue;
-            if (cell.Y <= -1 || cell.Y >= 28) continue;
+            if (cell.X <= 0 || cell.X >= 15) continue;
+            if (cell.Y <= 2 || cell.Y >= 22) continue;
 
             TileData t = map.GetCellTileData(cell);
-
-            if ((bool)t.GetCustomData("solid"))
-            {
-                output += $"{{\"X\": {cell.X}, \"Y\": {cell.Y}}},";
-            }
             if ((bool)t.GetCustomData("startpos"))
             {
-                output = $"\"StartLocation\":{{\"X\": {cell.X}, \"Y\": {cell.Y}}}," + output;
-                //output += $"{{{cell.X}, {cell.Y}}},";
+                l.StartLocation = cell;
+                continue;
             }
             if ((bool)t.GetCustomData("endpos"))
             {
-                output = $"\"EndLocation\":{{\"X\": {cell.X}, \"Y\": {cell.Y}}}," + output;
+                l.EndLocation = cell;
+                continue;
             }
-        }
+            if ((bool)t.GetCustomData("solid"))
+            {
+                l.Obstacles.Add(cell);
+            }
 
-        DisplayServer.ClipboardSet(output[..^1] + "]");
+        }
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.Converters.Add(new Vector2Converter());
+        options.Converters.Add(new Vector2IConverter());
+        options.Converters.Add(new EnemyConverter());
+        options.TypeInfoResolver = SourceGenerationContext.Default;
+        DisplayServer.ClipboardSet(JsonSerializer.Serialize(l, options));
+    }
+
+    public void OnResetButtonPressed()
+    {
+        foreach (Vector2I cell in map.GetUsedCells())
+        {
+            if (!(cell.X >= 0 &&
+                cell.Y >= 2 &&
+                cell.X <= 15 &&
+                cell.Y <= 22))
+            {
+                continue;
+            }
+            map.SetCell(cell, 0, new Vector2I(0, 0));
+        }
+        startSet = false;
+        endSet = false;
+    }
+    private Label debug;
+    public override void _PhysicsProcess(double delta)
+    {
+        Vector2 pos = GetGlobalMousePosition();
+        debug.Text = $"{pos}\n{map.LocalToMap(pos)}";
+        debug.GlobalPosition = pos;
     }
 }

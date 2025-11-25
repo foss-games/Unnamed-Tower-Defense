@@ -73,6 +73,8 @@ public partial class Hud : Node2D
         HPText = GetNode<Label>("HPText");
         timer = GetNode<Timer>("HudTimer");
         play = (Play)GetTree().GetFirstNodeInGroup("play");
+        //bypass setup for level builder
+        if (play == null) return;
         play.LevelEnded += () => timer.Stop();
         play.WaveChanged += OnWaveChange;
     }
